@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -12,9 +13,10 @@ public class PlaybackSlave : MonoBehaviour
     private float BPS => 60 / (float)BPM;
 
     private int beatOneOneOffset = 2;
-    private float _offset;
     private float SecondsToNextBar => (BPS * 4) - ((master.time + (BPS * beatOneOneOffset)) % (BPS * 4));
+    private int NextBarIndex => (int)Math.Floor((master.time - (BPS * beatOneOneOffset)) / (BPS * 4)) + 1;
 
+    private float _offset;
 
     private void Awake()
     {
@@ -54,8 +56,17 @@ public class PlaybackSlave : MonoBehaviour
         return dB;
     }
 
+    private int RestoreAtBar = -1;
     private IEnumerator ToggleMenu()
     {
+        if (isGameActive)
+        {
+            RestoreAtBar = NextBarIndex;
+        }
+        else
+        {
+            master.time = ((RestoreAtBar * (BPS * 4)) + (beatOneOneOffset * BPS)) - SecondsToNextBar;
+        }
         var timeUntilFade = SecondsToNextBar - fadeDuration;
         if (timeUntilFade < 0)
         {
@@ -73,6 +84,8 @@ public class PlaybackSlave : MonoBehaviour
             progress += Time.deltaTime / (fadeDuration/2);
             yield return null;
         }
+
+        var a = master.time;
         mixer.SetFloat(from, -80);
         mixer.SetFloat(to, 0);
         isGameActive = !isGameActive;
@@ -104,6 +117,7 @@ public class PlaybackSlave : MonoBehaviour
         GUI.Label(new Rect(0, 0, 200, 20), "Time until next bar: ");
         GUI.HorizontalSlider(new Rect(200, 0, 500, 20), SecondsToNextBar, 0f, BPS*4);
         GUI.Label(new Rect(700, 0, 200, 20), SecondsToNextBar.ToString());
-        GUI.Label(new Rect(0, 20, 500, 20), "Enough time to transition this bar: " + (SecondsToNextBar - fadeDuration <= 0));
+        GUI.Label(new Rect(0, 20, 500, 20), "Enough time to transition this bar: " + !(SecondsToNextBar - fadeDuration <= 0));
+        GUI.Label(new Rect(0, 40, 500, 20), "Next bar index: " + (NextBarIndex));
     }
 }
