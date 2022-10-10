@@ -118,8 +118,21 @@ public class PlaybackSlave : MonoBehaviour
         if (queueTimes.Contains(NextBarIndex))
         {
             shootSFX.PlayScheduled(SecondsToNextBar + AudioSettings.dspTime);
-            hitSFX.PlayScheduled(SecondsToNextBar + (BPS*2 * PrecisionNths) + AudioSettings.dspTime);
+            //hitSFX.PlayScheduled(SecondsToNextBar + (BPS*2 * PrecisionNths) + AudioSettings.dspTime);
             queueTimes.Remove(NextBarIndex);
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            /*
+             * @TODO VM:
+             * 1. Determine perfect response timing
+             * 2. Check if within threshold
+             * 3. On success play hit
+             * 4. On failure play whiff
+             */
+            
+            hitSFX.Play();
         }
     }
 
@@ -156,14 +169,29 @@ public class PlaybackSlave : MonoBehaviour
     }
 
     private List<int> pressedTiems = new List<int> { 
+        25, 26, 27,
         63, 64, 65, 
         71, 72, 73,
         79, 81, 
+        89,
         95, 96, 97,
         103, 104, 105, 
         113, 115, 
         129, 131,
         137, 138, 139,
+        
+        145, 147,
+        153, 155,
+        
+        161,
+        165,
+        169,
+        173,
+        
+        177, 179,
+        185, 187,
+        
+        197, 198, 199,
         205, 207,
         213, 214, 215 
     };
@@ -172,7 +200,7 @@ public class PlaybackSlave : MonoBehaviour
     private void SetupQueueTimes()
     {
         queueTimes = pressedTiems.Select(i => i - 1).ToList();
-       // master.time = 45;
+        master.time = 30;
     }
     
     private List<int> pressTimes = new List<int>();
