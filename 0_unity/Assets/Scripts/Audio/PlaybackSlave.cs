@@ -1,18 +1,22 @@
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Profiling;
+using UnityEngine.Serialization;
 
 public class PlaybackSlave : MonoBehaviour
 {
     public AudioMixer mixer;
     public AudioSource master;
-    public AudioSource slave;
 
-    private int BPM = 96;
+    private const int PrecisionNths = 8;
+    private int BPM = 130 * PrecisionNths;
     private float BPS => 60 / (float)BPM;
 
-    private int beatOneOneOffset = 2;
+    private int beatOneOneOffset = 4 * PrecisionNths;
     private float SecondsToNextBar => (BPS * 4) - ((master.time + (BPS * beatOneOneOffset)) % (BPS * 4));
     private int NextBarIndex => (int)Math.Floor((master.time - (BPS * beatOneOneOffset)) / (BPS * 4)) + 1;
 
@@ -23,6 +27,8 @@ public class PlaybackSlave : MonoBehaviour
         var timeBehindInSeconds = BPS * beatOneOneOffset;
         _offset = timeBehindInSeconds;
         fadeDuration = BPS/2;
+
+        SetupQueueTimes();
     }
 
     public void Start()
@@ -31,7 +37,6 @@ public class PlaybackSlave : MonoBehaviour
         mixer.SetFloat("MenuVolume", -80);
 
         master.Play();
-        slave.PlayDelayed(_offset);
     }
 
     private bool isGameActive = true;
@@ -57,8 +62,15 @@ public class PlaybackSlave : MonoBehaviour
     }
 
     private int RestoreAtBar = -1;
+    private bool isQueued = false;
     private IEnumerator ToggleMenu()
     {
+        if (isQueued)
+        {
+            yield break;
+        }
+
+        isQueued = true;
         if (isGameActive)
         {
             RestoreAtBar = NextBarIndex;
@@ -85,10 +97,10 @@ public class PlaybackSlave : MonoBehaviour
             yield return null;
         }
 
-        var a = master.time;
         mixer.SetFloat(from, -80);
         mixer.SetFloat(to, 0);
         isGameActive = !isGameActive;
+        isQueued = false;
     }
 
     private void Update()
@@ -97,19 +109,76 @@ public class PlaybackSlave : MonoBehaviour
         {
             StartCoroutine(ToggleMenu());
         }
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            if (master.isPlaying)
-            {
-                master.Pause();
-                slave.Pause();
-            }
-            else
-            {
-                master.UnPause();
-                slave.UnPause();
-            }
+            Record();
         }
+
+        if (queueTimes.Contains(NextBarIndex))
+        {
+            shootSFX.PlayScheduled(SecondsToNextBar + AudioSettings.dspTime);
+            hitSFX.PlayScheduled(SecondsToNextBar + (BPS*2 * PrecisionNths) + AudioSettings.dspTime);
+            queueTimes.Remove(NextBarIndex);
+        }
+    }
+
+    public AudioSource[] shootSFXPool = new AudioSource[0];
+    public AudioSource[] hitSFXPool = new AudioSource[0];
+    public int shootSFXIndex = -1;
+    public int hitSFXIndex = -1;
+
+    public AudioSource shootSFX
+    {
+        get
+        {
+            ++shootSFXIndex;
+            if (shootSFXIndex >= shootSFXPool.Length)
+            {
+                shootSFXIndex = 0;
+            }
+
+            return shootSFXPool[shootSFXIndex];
+        }
+    }
+    public AudioSource hitSFX
+    {
+        get
+        {
+            ++hitSFXIndex;
+            if (hitSFXIndex >= hitSFXPool.Length)
+            {
+                hitSFXIndex = 0;
+            }
+
+            return hitSFXPool[hitSFXIndex];
+        }
+    }
+
+    private List<int> pressedTiems = new List<int> { 
+        63, 64, 65, 
+        71, 72, 73,
+        79, 81, 
+        95, 96, 97,
+        103, 104, 105, 
+        113, 115, 
+        129, 131,
+        137, 138, 139,
+        205, 207,
+        213, 214, 215 
+    };
+    private List<int> queueTimes = new List<int>();
+
+    private void SetupQueueTimes()
+    {
+        queueTimes = pressedTiems.Select(i => i - 1).ToList();
+       // master.time = 45;
+    }
+    
+    private List<int> pressTimes = new List<int>();
+    private void Record()
+    {
+        pressTimes.Add(NextBarIndex);
     }
 
     private void OnGUI()
@@ -119,5 +188,13 @@ public class PlaybackSlave : MonoBehaviour
         GUI.Label(new Rect(700, 0, 200, 20), SecondsToNextBar.ToString());
         GUI.Label(new Rect(0, 20, 500, 20), "Enough time to transition this bar: " + !(SecondsToNextBar - fadeDuration <= 0));
         GUI.Label(new Rect(0, 40, 500, 20), "Next bar index: " + (NextBarIndex));
+
+        GUI.Label(new Rect(0, 60, 500, 20), "Recs: " + string.Join(", ", pressTimes));
+        GUI.Label(new Rect(0, 60, 500, 20), "IsRec: " + (pressedTiems.Contains(NextBarIndex) ? "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": ""));
+
+        if (!isQueued && GUI.Button(new Rect(0, 100, Screen.width, 300), "Toggle low-pass filter to end of next bar"))
+        {
+            StartCoroutine(ToggleMenu());
+        }
     }
 }
