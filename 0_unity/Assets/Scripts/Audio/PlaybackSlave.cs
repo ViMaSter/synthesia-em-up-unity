@@ -12,21 +12,22 @@ public class PlaybackSlave : MonoBehaviour
     public AudioMixer mixer;
     public AudioSource master;
 
-    private const int PrecisionNths = 8;
-    private int BPM = 130 * PrecisionNths;
-    private float BPS => 60 / (float)BPM;
+    private int PrecisionNths = 0;
+    private float BPM = 0;
+    private float BPSWithPrecision => 60 / (BPM * PrecisionNths);
 
-    private int beatOneOneOffset = 4 * PrecisionNths;
-    private float SecondsToNextBar => (BPS * 4) - ((master.time + (BPS * beatOneOneOffset)) % (BPS * 4));
-    private int NextBarIndex => (int)Math.Floor((master.time - (BPS * beatOneOneOffset)) / (BPS * 4)) + 1;
+    private float beatOneOneOffset = 0;
+    private float SecondsToNextBar => (BPSWithPrecision * 4) - ((master.time + (BPSWithPrecision * beatOneOneOffset)) % (BPSWithPrecision * 4));
+    private int NextBarIndex => (int)Math.Floor((master.time - (BPSWithPrecision * beatOneOneOffset)) / (BPSWithPrecision * 4)) + 1;
 
     private float _offset;
+    public float DebugStartAtSeconds = 0;
 
     private void Awake()
     {
-        var timeBehindInSeconds = BPS * beatOneOneOffset;
+        var timeBehindInSeconds = BPSWithPrecision * beatOneOneOffset;
         _offset = timeBehindInSeconds;
-        fadeDuration = BPS/2;
+        fadeDuration = BPSWithPrecision/2;
 
         SetupQueueTimes();
     }
@@ -35,8 +36,12 @@ public class PlaybackSlave : MonoBehaviour
     {
         mixer.SetFloat("GameVolume", 0.0f);
         mixer.SetFloat("MenuVolume", -80);
-
+        BPM = beatmap.BPM;
+        PrecisionNths = beatmap.Precision;
+        beatOneOneOffset = beatmap.BeatsUntilFirstBar * PrecisionNths;
+        master.clip = beatmap.track;
         master.Play();
+        master.time = DebugStartAtSeconds;
     }
 
     private bool isGameActive = true;
@@ -77,12 +82,12 @@ public class PlaybackSlave : MonoBehaviour
         }
         else
         {
-            master.time = ((RestoreAtBar * (BPS * 4)) + (beatOneOneOffset * BPS)) - SecondsToNextBar;
+            master.time = ((RestoreAtBar * (BPSWithPrecision * 4)) + (beatOneOneOffset * BPSWithPrecision)) - SecondsToNextBar;
         }
         var timeUntilFade = SecondsToNextBar - fadeDuration;
         if (timeUntilFade < 0)
         {
-            timeUntilFade += BPS * 4;
+            timeUntilFade += BPSWithPrecision * 4;
         }
         yield return new WaitForSeconds(timeUntilFade);
         float progress = -1.0f;
@@ -118,7 +123,7 @@ public class PlaybackSlave : MonoBehaviour
         if (queueTimes.Contains(NextBarIndex))
         {
             shootSFX.PlayScheduled(SecondsToNextBar + AudioSettings.dspTime);
-            //hitSFX.PlayScheduled(SecondsToNextBar + (BPS*2 * PrecisionNths) + AudioSettings.dspTime);
+            //hitSFX.PlayScheduled(SecondsToNextBar + (BPSWithPrecision*2 * PrecisionNths) + AudioSettings.dspTime);
             queueTimes.Remove(NextBarIndex);
         }
 
@@ -168,39 +173,12 @@ public class PlaybackSlave : MonoBehaviour
         }
     }
 
-    private List<int> pressedTiems = new List<int> { 
-        25, 26, 27,
-        63, 64, 65, 
-        71, 72, 73,
-        79, 81, 
-        89,
-        95, 96, 97,
-        103, 104, 105, 
-        113, 115, 
-        129, 131,
-        137, 138, 139,
-        
-        145, 147,
-        153, 155,
-        
-        161,
-        165,
-        169,
-        173,
-        
-        177, 179,
-        185, 187,
-        
-        197, 198, 199,
-        205, 207,
-        213, 214, 215 
-    };
     private List<int> queueTimes = new List<int>();
+    public BeatMap beatmap;
 
     private void SetupQueueTimes()
     {
-        queueTimes = pressedTiems.Select(i => i - 1).ToList();
-        master.time = 30;
+        queueTimes = beatmap.beats.Select(i => i - 1).ToList();
     }
     
     private List<int> pressTimes = new List<int>();
@@ -209,16 +187,22 @@ public class PlaybackSlave : MonoBehaviour
         pressTimes.Add(NextBarIndex);
     }
 
+    int previousCount = 0;
     private void OnGUI()
     {
+        if (previousCount == 0 && Input.touchCount == 1)
+        {
+            hitSFX.Play();
+        }
+        previousCount = Input.touchCount;
         GUI.Label(new Rect(0, 0, 200, 20), "Time until next bar: ");
-        GUI.HorizontalSlider(new Rect(200, 0, 500, 20), SecondsToNextBar, 0f, BPS*4);
+        GUI.HorizontalSlider(new Rect(200, 0, 500, 20), SecondsToNextBar, 0f, BPSWithPrecision*4);
         GUI.Label(new Rect(700, 0, 200, 20), SecondsToNextBar.ToString());
         GUI.Label(new Rect(0, 20, 500, 20), "Enough time to transition this bar: " + !(SecondsToNextBar - fadeDuration <= 0));
         GUI.Label(new Rect(0, 40, 500, 20), "Next bar index: " + (NextBarIndex));
 
         GUI.Label(new Rect(0, 60, 500, 20), "Recs: " + string.Join(", ", pressTimes));
-        GUI.Label(new Rect(0, 60, 500, 20), "IsRec: " + (pressedTiems.Contains(NextBarIndex) ? "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": ""));
+        GUI.Label(new Rect(0, 60, 500, 20), "IsRec: " + (queueTimes.Contains(NextBarIndex-1) ? "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": ""));
 
         if (!isQueued && GUI.Button(new Rect(0, 100, Screen.width, 300), "Toggle low-pass filter to end of next bar"))
         {
