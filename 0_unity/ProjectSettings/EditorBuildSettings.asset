@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/countdown.unity
+    guid: 613f812c8e2fa4b47becbeba5f104322
+  - enabled: 1
     path: Assets/Scenes/AudioTest.unity
     guid: c026d144ec8c0c041ba53113b69baaef
   m_configObjects: {}
