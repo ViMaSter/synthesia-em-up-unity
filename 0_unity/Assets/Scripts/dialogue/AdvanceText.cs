@@ -1,15 +1,14 @@
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class AdvanceText : MonoBehaviour
 {
     public TextMeshProUGUI textElement;
     public GameObject advanceIndicator;
     public AudioSource advanceSoundSource;
-    public AudioClip advanceSoundClip;
+    public AudioClip advanceHoldSoundClip;
+    public AudioClip advanceReleaseSoundClip;
     public string[] statements = new string[] {};
 
     private int currentIndex = -1;
@@ -36,6 +35,8 @@ public class AdvanceText : MonoBehaviour
     IEnumerator InitialAdvance()
     {
         yield return new WaitForSeconds(0.5f);
+        advanceSoundSource.PlayOneShot(advanceHoldSoundClip);
+        yield return new WaitForSeconds(0.05f);
         Advance();
     }
 
@@ -44,7 +45,7 @@ public class AdvanceText : MonoBehaviour
     {
         allowAdvance = false;
         advanceIndicator.SetActive(false);
-        advanceSoundSource.PlayOneShot(advanceSoundClip);
+        advanceSoundSource.PlayOneShot(advanceReleaseSoundClip);
         textElement.text = "";
         StartCoroutine(QueueNextText());
     }
@@ -52,9 +53,10 @@ public class AdvanceText : MonoBehaviour
     IEnumerator QueueNextText()
     {
         yield return _textDisplayDelay;
-        if (currentIndex >= statements.Length)
+        if (currentIndex >= statements.Length-1)
         {
             TextDone();
+            yield break;
         }
         textElement.text = statements[++currentIndex];
         StartCoroutine(AllowAdvance());
@@ -78,9 +80,20 @@ public class AdvanceText : MonoBehaviour
 
     void WaitForAdvance()
     {
-        if (Input.touchCount > 0)
+        if (Input.touchCount <= 0)
         {
-            Advance();
+            return;
+        }
+        
+        switch (Input.touches[0].phase)
+        {
+            case TouchPhase.Began:
+                advanceSoundSource.PlayOneShot(advanceHoldSoundClip);
+                return;
+            case TouchPhase.Ended:
+            case TouchPhase.Canceled:
+                Advance();
+                return;
         }
     }
 

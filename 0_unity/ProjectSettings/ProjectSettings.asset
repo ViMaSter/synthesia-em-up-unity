@@ -253,7 +253,7 @@ PlayerSettings:
   AndroidTargetDevices: 0
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
-  AndroidKeystoreName: C:/Users/accou/Dropbox/documents/vincent/24_ben-present-2022/keystore/user.keystore
+  AndroidKeystoreName: /Users/vimaster/Dropbox/documents/vincent/24_ben-present-2022/keystore/user.keystore
   AndroidKeyaliasName: ben-present-keystore
   AndroidBuildApkPerCpuArchitecture: 0
   AndroidTVCompatibility: 0

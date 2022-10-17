@@ -491,7 +491,8 @@ MonoBehaviour:
   textElement: {fileID: 1874880962}
   advanceIndicator: {fileID: 1641451573}
   advanceSoundSource: {fileID: 509408059}
-  advanceSoundClip: {fileID: 8300000, guid: 9d9a454598d605c428ecd00409dcf0df, type: 3}
+  advanceHoldSoundClip: {fileID: 8300000, guid: 248d4de81deac4e87b6b04c3d2b66e6b, type: 3}
+  advanceReleaseSoundClip: {fileID: 8300000, guid: 91bd9500d820f4690b5cf17d405b7b9e, type: 3}
   statements:
   - "Hallo! Wie sch\xF6n, dass du jetzt schon hier bist!"
   - "Du bist ein bisschen fr\xFCh. Noch ist ja nicht dein Geburtstag."
