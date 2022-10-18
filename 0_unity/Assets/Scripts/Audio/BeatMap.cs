@@ -9,4 +9,5 @@ public class BeatMap : ScriptableObject
     public int BeatsUntilFirstBar;
     public AudioClip Track;
     public int[] Beats;
+    public int[] FlickBeats;
 }

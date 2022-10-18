@@ -16,7 +16,7 @@ public class PlaybackSlave : MonoBehaviour
 
     private float beatOneOneOffset = 0;
     private float SecondsToNextBar => (BPSWithPrecision * 4) - ((master.time + (BPSWithPrecision * beatOneOneOffset)) % (BPSWithPrecision * 4));
-    private int NextBarIndex => (int)Math.Floor((master.time - (BPSWithPrecision * beatOneOneOffset)) / (BPSWithPrecision * 4)) + 1;
+    public int NextBarIndex => (int)Math.Floor((master.time - (BPSWithPrecision * beatOneOneOffset)) / (BPSWithPrecision * 4)) + 1;
 
     private float _offset;
     public float DebugStartAtSeconds = 0;

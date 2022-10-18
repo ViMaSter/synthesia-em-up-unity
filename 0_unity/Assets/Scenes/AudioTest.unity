@@ -606,7 +606,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mixer: {fileID: 24100000, guid: 17e8770f8d21e49478fd87f9d402882b, type: 2}
   master: {fileID: 535248214}
-  DebugStartAtSeconds: 42
+  DebugStartAtSeconds: 0
   fadeDuration: 0.5
   shootSFXPool:
   - {fileID: 1536528010}
@@ -618,7 +618,7 @@ MonoBehaviour:
   - {fileID: 1022292234}
   shootSFXIndex: -1
   hitSFXIndex: -1
-  beatmap: {fileID: 11400000, guid: 2310817fd78504e8e8e06cb17daef154, type: 2}
+  beatmap: {fileID: 11400000, guid: b013058f7bf8947ab9ebe36b0628b697, type: 2}
 --- !u!1 &590931280
 GameObject:
   m_ObjectHideFlags: 0
