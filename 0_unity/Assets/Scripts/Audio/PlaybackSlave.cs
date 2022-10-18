@@ -37,7 +37,7 @@ public class PlaybackSlave : MonoBehaviour
         BPM = beatmap.BPM;
         PrecisionNths = beatmap.Precision;
         beatOneOneOffset = beatmap.BeatsUntilFirstBar * PrecisionNths;
-        master.clip = beatmap.track;
+        master.clip = beatmap.Track;
         master.Play();
         master.time = DebugStartAtSeconds;
     }
@@ -176,7 +176,7 @@ public class PlaybackSlave : MonoBehaviour
 
     private void SetupQueueTimes()
     {
-        queueTimes = beatmap.beats.Select(i => i - 1).ToList();
+        queueTimes = beatmap.Beats.Select(i => i - 1).ToList();
     }
     
     private List<int> pressTimes = new List<int>();
