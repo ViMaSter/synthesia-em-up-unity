@@ -4,11 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class PlaybackSlave : MonoBehaviour
 {
     public AudioMixer mixer;
     public AudioSource master;
+    public UnityEvent onBarStart;
+    public UnityEvent onBeatStart;
 
     private int PrecisionNths = 0;
     private float BPM = 0;
@@ -25,7 +29,6 @@ public class PlaybackSlave : MonoBehaviour
     {
         var timeBehindInSeconds = BPSWithPrecision * beatOneOneOffset;
         _offset = timeBehindInSeconds;
-        fadeDuration = BPSWithPrecision/2;
 
         SetupQueueTimes();
     }
@@ -43,74 +46,46 @@ public class PlaybackSlave : MonoBehaviour
     }
 
     private bool isGameActive = true;
-    public float fadeDuration = 0f;
-
-    public float[] crossFade(float t)
-    {
-        return new[]
-        {
-            Mathf.Lerp(1,0, Mathf.Sqrt(0.5f * (1f + t))),
-            Mathf.Lerp(1,0, Mathf.Sqrt(0.5f * (1f - t)))
-        };
-    }
-
-    private float LinearToDecibel(float linear)
-    {
-        float dB;
-        if (linear != 0)
-            dB = 20.0f * Mathf.Log10(linear);
-        else
-            dB = -144.0f;
-        return dB;
-    }
 
     private int RestoreAtBar = -1;
     private bool isQueued = false;
-    private IEnumerator ToggleMenu()
+
+    private IEnumerator QueueBarStartAt(int beatIndex, double absoluteTime)
     {
-        if (isQueued)
+        if (AudioSettings.dspTime > absoluteTime)
         {
+            Debug.LogWarning($"Attempting to queue beat {beatIndex} was {AudioSettings.dspTime - absoluteTime}");
             yield break;
         }
-
-        isQueued = true;
-        if (isGameActive)
-        {
-            RestoreAtBar = NextBarIndex;
-        }
-        else
-        {
-            master.time = ((RestoreAtBar * (BPSWithPrecision * 4)) + (beatOneOneOffset * BPSWithPrecision)) - SecondsToNextBar;
-        }
-        var timeUntilFade = SecondsToNextBar - fadeDuration;
-        if (timeUntilFade < 0)
-        {
-            timeUntilFade += BPSWithPrecision * 4;
-        }
-        yield return new WaitForSeconds(timeUntilFade);
-        float progress = -1.0f;
-        string from = isGameActive ? "GameVolume" : "MenuVolume";
-        string to = isGameActive ? "MenuVolume" : "GameVolume";
-        while (progress < 1.0f)
-        {
-            float[] values = crossFade(progress);
-            mixer.SetFloat(from, LinearToDecibel(values[0]));
-            mixer.SetFloat(to, LinearToDecibel(values[1]));
-            progress += Time.deltaTime / (fadeDuration/2);
-            yield return null;
-        }
-
-        mixer.SetFloat(from, -80);
-        mixer.SetFloat(to, 0);
-        isGameActive = !isGameActive;
-        isQueued = false;
+        Debug.Log("Beat: " + beatIndex);
+        yield return new WaitForSeconds((float)(AudioSettings.dspTime - absoluteTime));
+        onBarStart.Invoke();
     }
+
+    private IEnumerator QueueBeatStartAt(int bpmIndex, double absoluteTime)
+    {
+        if (AudioSettings.dspTime > absoluteTime)
+        {
+            Debug.LogWarning($"Attempting to queue beat {bpmIndex} was {AudioSettings.dspTime - absoluteTime} too late");
+            yield break;
+        }
+        Debug.Log("BPM: " + bpmIndex);
+        yield return new WaitForSeconds((float)(AudioSettings.dspTime - absoluteTime));
+        onBeatStart.Invoke();
+    }
+
+    private List<int> queuedBeats = new List<int>(1000);
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (!queuedBeats.Contains(NextBarIndex))
         {
-            StartCoroutine(ToggleMenu());
+            StartCoroutine(QueueBeatStartAt(NextBarIndex, AudioSettings.dspTime + SecondsToNextBar));
+            if ((NextBarIndex % 4) == 0)
+            {
+                StartCoroutine(QueueBarStartAt(NextBarIndex, AudioSettings.dspTime + SecondsToNextBar));
+            }
+            queuedBeats.Add(NextBarIndex);
         }
 
         if (Input.GetKeyDown(KeyCode.R))
@@ -196,15 +171,9 @@ public class PlaybackSlave : MonoBehaviour
         GUI.Label(new Rect(0, 0, 200, 20), "Time until next bar: ");
         GUI.HorizontalSlider(new Rect(200, 0, 500, 20), SecondsToNextBar, 0f, BPSWithPrecision*4);
         GUI.Label(new Rect(700, 0, 200, 20), SecondsToNextBar.ToString());
-        GUI.Label(new Rect(0, 20, 500, 20), "Enough time to transition this bar: " + !(SecondsToNextBar - fadeDuration <= 0));
         GUI.Label(new Rect(0, 40, 500, 20), "Next bar index: " + (NextBarIndex));
 
         GUI.Label(new Rect(0, 60, 500, 20), "Recs: " + string.Join(", ", pressTimes));
-        GUI.Label(new Rect(0, 60, 500, 20), "IsRec: " + (queueTimes.Contains(NextBarIndex-1) ? "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": ""));
-
-        if (!isQueued && GUI.Button(new Rect(0, 100, Screen.width, 300), "Toggle low-pass filter to end of next bar"))
-        {
-            StartCoroutine(ToggleMenu());
-        }
+        GUI.Label(new Rect(0, 60, 500, 20),"IsRec: " + (queueTimes.Contains(NextBarIndex-1) ? "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": ""));
     }
 }

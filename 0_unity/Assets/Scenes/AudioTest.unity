@@ -834,8 +834,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mixer: {fileID: 24100000, guid: 17e8770f8d21e49478fd87f9d402882b, type: 2}
   master: {fileID: 535248214}
+  onBarStart:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1607807684}
+        m_TargetAssemblyTypeName: BobHead, Assembly-CSharp
+        m_MethodName: Bob
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onBeatStart:
+    m_PersistentCalls:
+      m_Calls: []
   DebugStartAtSeconds: 0
-  fadeDuration: 0.5
   shootSFXPool:
   - {fileID: 1536528010}
   - {fileID: 369887851}
@@ -1530,6 +1547,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06004697baf868e42a6db81e9ef6c0f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 1607807685}
 --- !u!95 &1607807685
 Animator:
   serializedVersion: 4
