@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class AdvanceText : MonoBehaviour
 {
@@ -10,6 +12,7 @@ public class AdvanceText : MonoBehaviour
     public AudioClip advanceHoldSoundClip;
     public AudioClip advanceReleaseSoundClip;
     public string[] statements = new string[] {};
+    public UnityEvent OnDone;
 
     private int currentIndex = -1;
     private bool allowAdvance = false;
@@ -80,8 +83,14 @@ public class AdvanceText : MonoBehaviour
 
     void WaitForAdvance()
     {
-        if (Input.touchCount <= 0)
+        if (Input.touchCount <= 0 && !Input.GetMouseButton(0))
         {
+            return;
+        }
+
+        if (Input.GetMouseButton(0))
+        {
+            Advance();
             return;
         }
         
@@ -99,6 +108,6 @@ public class AdvanceText : MonoBehaviour
 
     void TextDone()
     {
-        Application.Quit();
+        OnDone.Invoke();
     }
 }
