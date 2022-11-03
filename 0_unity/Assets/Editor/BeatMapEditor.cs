@@ -70,6 +70,14 @@ public class BeatMapEditor : Editor
             
             EditorGUILayout.BeginHorizontal(activeSlave?.NextBarIndex == i ? borderstyle : style);
             b[i] = EditorGUILayout.Toggle(b[i]);
+            if (i < 4)
+            {
+                EditorGUILayout.Toggle(false);
+            }
+            else
+            {
+                b[i-4] = EditorGUILayout.Toggle(b[i-4]);
+            }
             b2[i] = EditorGUILayout.Toggle(b2[i]);
             EditorGUILayout.EndHorizontal();
             if (i % 4 == 0)

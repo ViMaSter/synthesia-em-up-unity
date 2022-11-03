@@ -11,7 +11,7 @@ public class PeaManager : MonoBehaviour
 {
     private Animator _peaAnimator;
     private Image _peaImage;
-    private const float HitTolerance = 0.2f;
+    private const float HitTolerance = 0.1f;
     public float correctHitAt = -1f;
     private float _startAt;
 
@@ -21,19 +21,19 @@ public class PeaManager : MonoBehaviour
         _peaImage = GetComponent<Image>();
     }
 
-    public void AttemptHit()
+    public bool AttemptHit()
     {
         if (correctHitAt == -1)
         {
             Debug.Log(gameObject.name+": IGNORE!");
-            return;
+            return false;
         }
         float now = Time.time;
         if (correctHitAt - HitTolerance < now && now < correctHitAt + HitTolerance)
         {
             IsHit();
             Debug.Log(gameObject.name+": HIT!");
-            return;
+            return true;
         }
 
         if (correctHitAt + HitTolerance < now)
@@ -41,6 +41,7 @@ public class PeaManager : MonoBehaviour
             Reset();
         }
         Debug.Log(gameObject.name+": MISS!");
+        return false;
     }
 
     private void IsHit()

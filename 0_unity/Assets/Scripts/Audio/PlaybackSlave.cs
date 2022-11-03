@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class PlaybackSlave : MonoBehaviour
 {
@@ -89,9 +90,14 @@ public class PlaybackSlave : MonoBehaviour
             Record();
         }
 
-        if (queueTimes.Contains(NextBarIndex))
+        if (_pokeTimes.Contains(NextBarIndex))
         {
             PlayShot();
+        }
+
+        if (_eatTimes.Contains(NextBarIndex))
+        {
+            PlayEat();
         }
         
         if ((Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) || Input.GetKeyDown(KeyCode.T))
@@ -106,10 +112,20 @@ public class PlaybackSlave : MonoBehaviour
     }
 
     public Animator flickAnimator;
+    private void PlayEat()
+    {
+        if (_peaCounter <= 0)
+        {
+            return;
+        }
+        _eatTimes.Remove(NextBarIndex);
+        chopAnimator.Play("eat", 0, 0);
+        StartCoroutine(ClearPeas());
+    }
     private void PlayShot()
     {
         shootSFX.PlayScheduled(SecondsToNextBar + AudioSettings.dspTime);
-        queueTimes.Remove(NextBarIndex);
+        _pokeTimes.Remove(NextBarIndex);
         flickAnimator.Play("flick", 0, 0);
         peaManager.Fire(SecondsToNextBar + BPSWithPrecision * beatmap.Precision * 2);
     }
@@ -117,12 +133,46 @@ public class PlaybackSlave : MonoBehaviour
     public Animator chopAnimator;
     private void PlayPoke()
     {
+        bool hasHitAny = false;
         foreach (var manager in peaManagerPool)
         {
-            manager.AttemptHit();
+            if (manager.AttemptHit())
+            {
+                hasHitAny = true;
+                IncreasePeaCounter();
+            }
         }
-        hitSFX.Play();
-        chopAnimator.Play("poke", 0, 0);
+
+        if (hasHitAny)
+        {
+            hitSFX.Play();
+            chopAnimator.Play("poke", 0, 0);
+        }
+        else
+        {
+            whiffSFX.Play();
+            chopAnimator.Play("whiff", 0, 0);
+        }
+    }
+
+    public Image[] peaSlots;
+    private void IncreasePeaCounter()
+    {
+        ++_peaCounter;
+        for (var i = 0; i < _peaCounter; ++i)
+        {
+            peaSlots[i].color = Color.white;
+        }
+    }
+
+    public IEnumerator ClearPeas()
+    {
+        yield return new WaitForSeconds(0.33f);
+        _peaCounter = 0;
+        foreach (var peaSlot in peaSlots)
+        {
+            peaSlot.color = new Color(0, 0, 0, 0);
+        }
     }
 
     public AudioSource[] shootSFXPool = new AudioSource[0];
@@ -174,13 +224,31 @@ public class PlaybackSlave : MonoBehaviour
             return hitSFXPool[hitSFXIndex];
         }
     }
+    
+    public AudioSource[] whiffSFXPool = new AudioSource[0];
+    public int whiffSFXIndex = -1;
+    public AudioSource whiffSFX
+    {
+        get
+        {
+            ++whiffSFXIndex;
+            if (whiffSFXIndex >= whiffSFXPool.Length)
+            {
+                whiffSFXIndex = 0;
+            }
 
-    private List<int> queueTimes = new List<int>();
+            return whiffSFXPool[whiffSFXIndex];
+        }
+    }
+
+    private List<int> _pokeTimes = new List<int>();
+    private List<int> _eatTimes;
     public BeatMap beatmap;
 
     private void SetupQueueTimes()
     {
-        queueTimes = beatmap.Beats.Select(i => i - 1).ToList();
+        _pokeTimes = beatmap.Beats.Select(i => i - 1).ToList();
+        _eatTimes = beatmap.FlickBeats.Select(i => i - 1).ToList();
     }
     
     private List<int> pressTimes = new List<int>();
@@ -191,6 +259,7 @@ public class PlaybackSlave : MonoBehaviour
 
     private float _lastPokeAt = -1f;
     private float pokePause = 0.110f;
+    private int _peaCounter;
 
     private void OnGUI()
     {
@@ -203,6 +272,6 @@ public class PlaybackSlave : MonoBehaviour
         GUI.Label(new Rect(0, 60, 500, 20), "Next bar index: " + (NextBarIndex));
 
         GUI.Label(new Rect(0, 100, 500, 20), "Recs: " + string.Join(", ", pressTimes));
-        GUI.Label(new Rect(0, 100, 500, 20),"IsRec: " + (queueTimes.Contains(NextBarIndex-1) ? "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": ""));
+        GUI.Label(new Rect(0, 100, 500, 20),"IsRec: " + (_pokeTimes.Contains(NextBarIndex-1) ? "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": ""));
     }
 }
