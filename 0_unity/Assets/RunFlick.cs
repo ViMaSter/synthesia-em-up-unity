@@ -18,7 +18,6 @@ public class RunFlick : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F))
         {
             _animator.Play("flick", 0, 0);
-            _animator.playbackTime = 0;
         }
     }
 }

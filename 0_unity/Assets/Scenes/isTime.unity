@@ -498,11 +498,13 @@ MonoBehaviour:
   - "Hallo! Wie sch\xF6n, dass du hier bist!"
   - "Ich hoffe du hast Ton an! Jedes mal wenn du hier weiter tippst, solltest du
     etwas h\xF6ren."
-  - Wenn nicht, ist das jetzt deine Chance den Ton an zu machen.
-  - Ohne Ton wird das gleich etwas schwierig.
+  - Wenn nicht, ist das jetzt deine Chance den Ton an zu machen!
+  - Du kriegst das hin, ich glaube an dich!
+  - Ohne Ton wird das sonst gleich etwas schwierig.
   - "Ach und noch was: Kabellose Kopfh\xF6rer sind eher schwierig. Nimm lieber deine
     Handylautsprecher!"
-  - "Ton an und tippen ge\xFCbt? Dann kanns ja los gehen. Bis bald!"
+  - "Ton an und tippen ge\xFCbt? Klasse! Dann kanns ja los gehen."
+  - Bis gleich!
   OnDone:
     m_PersistentCalls:
       m_Calls:

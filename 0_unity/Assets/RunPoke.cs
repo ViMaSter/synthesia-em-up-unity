@@ -17,13 +17,13 @@ public class RunPoke : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
+            Debug.Log(_animator);
+
             _animator.Play("poke", 0, 0);
-            _animator.playbackTime = 0;
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
             _animator.Play("eat", 0, 0);
-            _animator.playbackTime = 0;
         }
     }
 }

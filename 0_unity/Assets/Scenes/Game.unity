@@ -431,6 +431,7 @@ GameObject:
   - component: {fileID: 318293551}
   - component: {fileID: 318293550}
   - component: {fileID: 318293549}
+  - component: {fileID: 318293553}
   m_Layer: 5
   m_Name: pea1
   m_TagString: Untagged
@@ -528,6 +529,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 318293547}
   m_CullTransparentMesh: 1
+--- !u!114 &318293553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 318293547}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4e073ecf4e7148b98b51087d03b1296, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  correctHitAt: -1
 --- !u!1 &369887850
 GameObject:
   m_ObjectHideFlags: 0
@@ -1053,16 +1067,23 @@ MonoBehaviour:
   onBeatStart:
     m_PersistentCalls:
       m_Calls: []
-  DebugStartAtSeconds: 175
+  DebugStartAtSeconds: 15
+  flickAnimator: {fileID: 661473653}
+  chopAnimator: {fileID: 1835514690}
   shootSFXPool:
   - {fileID: 1536528010}
   - {fileID: 369887851}
   - {fileID: 590931281}
+  shootSFXIndex: -1
+  peaManagerPool:
+  - {fileID: 1963559792}
+  - {fileID: 318293553}
+  - {fileID: 1943180609}
+  peaManagerIndex: -1
   hitSFXPool:
   - {fileID: 1982070648}
   - {fileID: 281548287}
   - {fileID: 1022292234}
-  shootSFXIndex: -1
   hitSFXIndex: -1
   beatmap: {fileID: 11400000, guid: b013058f7bf8947ab9ebe36b0628b697, type: 2}
 --- !u!1 &590931280
@@ -1995,7 +2016,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 778471439, guid: 1f9a9a2f8f584490f907148c8adbfc32, type: 3}
+  m_Sprite: {fileID: 1557236615, guid: 1f9a9a2f8f584490f907148c8adbfc32, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2046,6 +2067,7 @@ GameObject:
   - component: {fileID: 1943180607}
   - component: {fileID: 1943180606}
   - component: {fileID: 1943180605}
+  - component: {fileID: 1943180609}
   m_Layer: 5
   m_Name: pea2
   m_TagString: Untagged
@@ -2143,6 +2165,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1943180603}
   m_CullTransparentMesh: 1
+--- !u!114 &1943180609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1943180603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4e073ecf4e7148b98b51087d03b1296, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  correctHitAt: -1
 --- !u!1 &1963559786
 GameObject:
   m_ObjectHideFlags: 0
@@ -2156,6 +2191,7 @@ GameObject:
   - component: {fileID: 1963559789}
   - component: {fileID: 1963559788}
   - component: {fileID: 1963559791}
+  - component: {fileID: 1963559792}
   m_Layer: 5
   m_Name: pea0
   m_TagString: Untagged
@@ -2253,6 +2289,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29f2ed5eb4a274c0fb02fe268046fd8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1963559792
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1963559786}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4e073ecf4e7148b98b51087d03b1296, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  correctHitAt: -1
 --- !u!1 &1982070647
 GameObject:
   m_ObjectHideFlags: 0

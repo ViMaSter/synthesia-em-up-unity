@@ -83,12 +83,12 @@ public class AdvanceText : MonoBehaviour
 
     void WaitForAdvance()
     {
-        if (Input.touchCount <= 0 && !Input.GetMouseButton(0))
+        if (Input.touchCount <= 0 && !Input.GetMouseButton(1))
         {
             return;
         }
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButton(1))
         {
             Advance();
             return;

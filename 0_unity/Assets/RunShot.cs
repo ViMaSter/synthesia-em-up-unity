@@ -18,7 +18,6 @@ public class RunShot : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             _animator.Play("rolling", 0, 0);
-            _animator.playbackTime = 0;
         }
     }
 }

@@ -39,7 +39,6 @@ public class PlaybackSlave : MonoBehaviour
         mixer.SetFloat("MenuVolume", -80);
         BPM = beatmap.BPM;
         master.clip = beatmap.Track;
-        master.pitch = 0.5f;
         master.Play();
         master.time = DebugStartAtSeconds;
     }
@@ -92,29 +91,42 @@ public class PlaybackSlave : MonoBehaviour
 
         if (queueTimes.Contains(NextBarIndex))
         {
-            shootSFX.PlayScheduled(SecondsToNextBar + AudioSettings.dspTime);
-            //hitSFX.PlayScheduled(SecondsToNextBar + (BPSWithPrecision*2 * beatmap.Precision) + AudioSettings.dspTime);
-            queueTimes.Remove(NextBarIndex);
+            PlayShot();
         }
-
-        if (Input.GetKeyDown(KeyCode.T))
+        
+        if ((Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) || Input.GetKeyDown(KeyCode.T))
         {
-            /*
-             * @TODO VM:
-             * 1. Determine perfect response timing
-             * 2. Check if within threshold
-             * 3. On success play hit
-             * 4. On failure play whiff
-             */
-            
-            hitSFX.Play();
+            if (_lastPokeAt + pokePause >= Time.time)
+            {
+                return;
+            }
+            _lastPokeAt = Time.time;
+            PlayPoke();
         }
     }
 
+    public Animator flickAnimator;
+    private void PlayShot()
+    {
+        shootSFX.PlayScheduled(SecondsToNextBar + AudioSettings.dspTime);
+        queueTimes.Remove(NextBarIndex);
+        flickAnimator.Play("flick", 0, 0);
+        peaManager.Fire(SecondsToNextBar + BPSWithPrecision * beatmap.Precision * 2);
+    }
+
+    public Animator chopAnimator;
+    private void PlayPoke()
+    {
+        foreach (var manager in peaManagerPool)
+        {
+            manager.AttemptHit();
+        }
+        hitSFX.Play();
+        chopAnimator.Play("poke", 0, 0);
+    }
+
     public AudioSource[] shootSFXPool = new AudioSource[0];
-    public AudioSource[] hitSFXPool = new AudioSource[0];
     public int shootSFXIndex = -1;
-    public int hitSFXIndex = -1;
 
     public AudioSource shootSFX
     {
@@ -129,6 +141,26 @@ public class PlaybackSlave : MonoBehaviour
             return shootSFXPool[shootSFXIndex];
         }
     }
+
+    public PeaManager[] peaManagerPool = new PeaManager[0];
+    public int peaManagerIndex = -1;
+
+    public PeaManager peaManager
+    {
+        get
+        {
+            ++peaManagerIndex;
+            if (peaManagerIndex >= peaManagerPool.Length)
+            {
+                peaManagerIndex = 0;
+            }
+
+            return peaManagerPool[peaManagerIndex];
+        }
+    }
+    
+    public AudioSource[] hitSFXPool = new AudioSource[0];
+    public int hitSFXIndex = -1;
     public AudioSource hitSFX
     {
         get
@@ -157,14 +189,11 @@ public class PlaybackSlave : MonoBehaviour
         pressTimes.Add(NextBarIndex);
     }
 
-    int previousCount = 0;
+    private float _lastPokeAt = -1f;
+    private float pokePause = 0.110f;
+
     private void OnGUI()
     {
-        if (previousCount == 0 && Input.touchCount == 1)
-        {
-            hitSFX.Play();
-        }
-        previousCount = Input.touchCount;
         GUI.Label(new Rect(0, 0, 200, 20), "Time until next bar: ");
         GUI.HorizontalSlider(new Rect(200, 0, 500, 20), SecondsToNextBar, 0f, BPSWithPrecision*4);
         GUI.Label(new Rect(700, 0, 200, 20), SecondsToNextBar.ToString());
