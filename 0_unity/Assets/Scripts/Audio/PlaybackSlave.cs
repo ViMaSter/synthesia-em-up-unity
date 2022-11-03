@@ -14,33 +14,32 @@ public class PlaybackSlave : MonoBehaviour
     public UnityEvent onBarStart;
     public UnityEvent onBeatStart;
 
-    private int PrecisionNths = 0;
     private float BPM = 0;
-    private float BPSWithPrecision => 60 / (BPM * PrecisionNths);
-
-    private float beatOneOneOffset = 0;
-    private float SecondsToNextBar => (BPSWithPrecision * 4) - ((master.time + (BPSWithPrecision * beatOneOneOffset)) % (BPSWithPrecision * 4));
-    public int NextBarIndex => (int)Math.Floor((master.time - (BPSWithPrecision * beatOneOneOffset)) / (BPSWithPrecision * 4)) + 1;
+    private float BPSWithPrecision => 60 / (BPM * beatmap.Precision);
+    private float BeatOneOneOffset => beatmap.BeatsUntilFirstBar * beatmap.Precision;
+    private float SecondsToNextBar => (BPSWithPrecision * 4) - ((master.time + (BPSWithPrecision * BeatOneOneOffset)) % (BPSWithPrecision * 4));
+    private float BeatOffset => SecondsToNextBar - (BPSWithPrecision * 2);
+    public int NextBarIndex => (int)Math.Floor((master.time - (BPSWithPrecision * BeatOneOneOffset)) / (BPSWithPrecision * 4)) + 1;
 
     private float _offset;
     public float DebugStartAtSeconds = 0;
 
     private void Awake()
     {
-        var timeBehindInSeconds = BPSWithPrecision * beatOneOneOffset;
+        var timeBehindInSeconds = BPSWithPrecision * BeatOneOneOffset;
         _offset = timeBehindInSeconds;
-
+        
         SetupQueueTimes();
     }
 
     public void Start()
     {
+        Debug.Log(BeatOneOneOffset);
         mixer.SetFloat("GameVolume", 0.0f);
         mixer.SetFloat("MenuVolume", -80);
         BPM = beatmap.BPM;
-        PrecisionNths = beatmap.Precision;
-        beatOneOneOffset = beatmap.BeatsUntilFirstBar * PrecisionNths;
         master.clip = beatmap.Track;
+        master.pitch = 0.5f;
         master.Play();
         master.time = DebugStartAtSeconds;
     }
@@ -57,7 +56,6 @@ public class PlaybackSlave : MonoBehaviour
             Debug.LogWarning($"Attempting to queue beat {beatIndex} was {AudioSettings.dspTime - absoluteTime}");
             yield break;
         }
-        Debug.Log("Beat: " + beatIndex);
         yield return new WaitForSeconds((float)(AudioSettings.dspTime - absoluteTime));
         onBarStart.Invoke();
     }
@@ -69,7 +67,6 @@ public class PlaybackSlave : MonoBehaviour
             Debug.LogWarning($"Attempting to queue beat {bpmIndex} was {AudioSettings.dspTime - absoluteTime} too late");
             yield break;
         }
-        Debug.Log("BPM: " + bpmIndex);
         yield return new WaitForSeconds((float)(AudioSettings.dspTime - absoluteTime));
         onBeatStart.Invoke();
     }
@@ -81,7 +78,7 @@ public class PlaybackSlave : MonoBehaviour
         if (!queuedBeats.Contains(NextBarIndex))
         {
             StartCoroutine(QueueBeatStartAt(NextBarIndex, AudioSettings.dspTime + SecondsToNextBar));
-            if ((NextBarIndex % 4) == 0)
+            if ((NextBarIndex % 4) == 1)
             {
                 StartCoroutine(QueueBarStartAt(NextBarIndex, AudioSettings.dspTime + SecondsToNextBar));
             }
@@ -96,7 +93,7 @@ public class PlaybackSlave : MonoBehaviour
         if (queueTimes.Contains(NextBarIndex))
         {
             shootSFX.PlayScheduled(SecondsToNextBar + AudioSettings.dspTime);
-            //hitSFX.PlayScheduled(SecondsToNextBar + (BPSWithPrecision*2 * PrecisionNths) + AudioSettings.dspTime);
+            //hitSFX.PlayScheduled(SecondsToNextBar + (BPSWithPrecision*2 * beatmap.Precision) + AudioSettings.dspTime);
             queueTimes.Remove(NextBarIndex);
         }
 
@@ -171,9 +168,12 @@ public class PlaybackSlave : MonoBehaviour
         GUI.Label(new Rect(0, 0, 200, 20), "Time until next bar: ");
         GUI.HorizontalSlider(new Rect(200, 0, 500, 20), SecondsToNextBar, 0f, BPSWithPrecision*4);
         GUI.Label(new Rect(700, 0, 200, 20), SecondsToNextBar.ToString());
-        GUI.Label(new Rect(0, 40, 500, 20), "Next bar index: " + (NextBarIndex));
+        GUI.HorizontalSlider(new Rect(200, 40, 1500, 20), BeatOffset, -BPSWithPrecision*2, BPSWithPrecision*2);
+        GUI.Box(new Rect(200+750, 30, 1, 40), Texture2D.redTexture);
+        GUI.Label(new Rect(700, 40, 800, 20), BeatOffset.ToString());
+        GUI.Label(new Rect(0, 60, 500, 20), "Next bar index: " + (NextBarIndex));
 
-        GUI.Label(new Rect(0, 60, 500, 20), "Recs: " + string.Join(", ", pressTimes));
-        GUI.Label(new Rect(0, 60, 500, 20),"IsRec: " + (queueTimes.Contains(NextBarIndex-1) ? "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": ""));
+        GUI.Label(new Rect(0, 100, 500, 20), "Recs: " + string.Join(", ", pressTimes));
+        GUI.Label(new Rect(0, 100, 500, 20),"IsRec: " + (queueTimes.Contains(NextBarIndex-1) ? "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": ""));
     }
 }
