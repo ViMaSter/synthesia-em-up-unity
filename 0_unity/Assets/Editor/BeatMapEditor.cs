@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.ShortcutManagement;
 using UnityEngine;
 
 [CustomEditor(typeof(BeatMap))]
@@ -57,18 +58,31 @@ public class BeatMapEditor : Editor
 
         List<bool> b = new List<bool>();
         List<bool> b2 = new List<bool>();
-        for (var i = 0; i <= a.Max(); ++i)
+        var mostEntries = Math.Max(a.Max(), a2.Max());
+        var clip = (AudioClip)Track.objectReferenceValue;
+        var beatsInSong = Math.Ceiling(clip.length * (BPM.floatValue / 60.0f)) * 2;
+
+        for (var i = 0; i <= Math.Max(mostEntries, beatsInSong); ++i)
         {
             b.Add(a.Contains(i));
             b2.Add(a2.Contains(i));
         }
-
-        for (var i = 1; i < b.Count; ++i)
+        
+        for (var i = 1; i < Math.Max(mostEntries, beatsInSong); ++i)
         {
+            if (b.Count < i)
+            {
+                b.Add(false);
+            }
+            if (b2.Count < i)
+            {
+                b2.Add(false);
+            }
             var borderstyle = new GUIStyle() {normal = new GUIStyleState(){background = Texture2D.grayTexture}};
             var style = new GUIStyle();
             
             EditorGUILayout.BeginHorizontal(activeSlave?.NextBarIndex == i ? borderstyle : style);
+            EditorGUILayout.LabelField(i.ToString());
             b[i] = EditorGUILayout.Toggle(b[i]);
             if (i < 4)
             {

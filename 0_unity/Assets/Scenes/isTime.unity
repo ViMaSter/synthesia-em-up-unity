@@ -501,8 +501,8 @@ MonoBehaviour:
   - Wenn nicht, ist das jetzt deine Chance den Ton an zu machen!
   - Du kriegst das hin, ich glaube an dich!
   - Ohne Ton wird das sonst gleich etwas schwierig.
-  - "Ach und noch was: Kabellose Kopfh\xF6rer sind eher schwierig. Nimm lieber deine
-    Handylautsprecher!"
+  - "Ach und noch was: Kabellose Kopfh\xF6rer sind eher suboptimal.    Nimm lieber
+    deine Handylautsprecher!"
   - "Ton an und tippen ge\xFCbt? Klasse! Dann kanns ja los gehen."
   - Bis gleich!
   OnDone:

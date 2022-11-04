@@ -263,6 +263,11 @@ public class PlaybackSlave : MonoBehaviour
 
     private void OnGUI()
     {
+        if (!Debug.isDebugBuild)
+        {
+            return;
+        }
+        
         GUI.Label(new Rect(0, 0, 200, 20), "Time until next bar: ");
         GUI.HorizontalSlider(new Rect(200, 0, 500, 20), SecondsToNextBar, 0f, BPSWithPrecision*4);
         GUI.Label(new Rect(700, 0, 200, 20), SecondsToNextBar.ToString());
