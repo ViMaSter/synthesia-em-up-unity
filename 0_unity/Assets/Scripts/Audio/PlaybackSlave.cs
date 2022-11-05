@@ -41,7 +41,10 @@ public class PlaybackSlave : MonoBehaviour
         BPM = beatmap.BPM;
         master.clip = beatmap.Track;
         master.Play();
-        master.time = DebugStartAtSeconds;
+        if (Debug.isDebugBuild)
+        {
+            master.time = DebugStartAtSeconds;
+        }
     }
 
     public void JumpTo(int beat)
