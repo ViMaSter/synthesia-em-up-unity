@@ -39,9 +39,14 @@ public class BeatMapEditor : Editor
         // EditorGUILayout.PropertyField(Beats);
         // EditorGUILayout.PropertyField(FlickBeats);
                 
+        var buttonAndLabel = GUILayout.Width(40);
+        var boxes = GUILayout.Width(80);
         EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("Tap");
-        EditorGUILayout.LabelField("Hold");
+        EditorGUILayout.LabelField("Jump", buttonAndLabel);
+        EditorGUILayout.LabelField("Beat", buttonAndLabel);
+        EditorGUILayout.LabelField("Flick", boxes);
+        EditorGUILayout.LabelField("Player", boxes);
+        EditorGUILayout.LabelField("Eat", boxes);
         EditorGUILayout.EndHorizontal();
 
         List<int> a = new List<int>(0);
@@ -82,17 +87,24 @@ public class BeatMapEditor : Editor
             var style = new GUIStyle();
             
             EditorGUILayout.BeginHorizontal(activeSlave?.NextBarIndex == i ? borderstyle : style);
-            EditorGUILayout.LabelField(i.ToString());
-            b[i] = EditorGUILayout.Toggle(b[i]);
+            if (GUILayout.Button("▶️", buttonAndLabel))
+            {
+                if (activeSlave)
+                {
+                    activeSlave.JumpTo(i);
+                }
+            }
+            EditorGUILayout.LabelField(i.ToString(), buttonAndLabel);
+            b[i] = EditorGUILayout.Toggle(b[i], boxes);
             if (i < 4)
             {
-                EditorGUILayout.Toggle(false);
+                EditorGUILayout.Toggle(false, boxes);
             }
             else
             {
-                b[i-4] = EditorGUILayout.Toggle(b[i-4]);
+                b[i-4] = EditorGUILayout.Toggle(b[i-4], boxes);
             }
-            b2[i] = EditorGUILayout.Toggle(b2[i]);
+            b2[i] = EditorGUILayout.Toggle(b2[i], boxes);
             EditorGUILayout.EndHorizontal();
             if (i % 4 == 0)
             {

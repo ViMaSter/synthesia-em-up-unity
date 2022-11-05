@@ -30,7 +30,7 @@ public class PlaybackSlave : MonoBehaviour
         var timeBehindInSeconds = BPSWithPrecision * BeatOneOneOffset;
         _offset = timeBehindInSeconds;
         
-        SetupQueueTimes();
+        SetupQueueTimes(0);
     }
 
     public void Start()
@@ -42,6 +42,15 @@ public class PlaybackSlave : MonoBehaviour
         master.clip = beatmap.Track;
         master.Play();
         master.time = DebugStartAtSeconds;
+    }
+
+    public void JumpTo(int beat)
+    {
+        SetupQueueTimes(beat);
+
+        var time = BPSWithPrecision * (beat - 1) * 4 +
+                        BPSWithPrecision * BeatOneOneOffset;
+        master.time = time;
     }
 
     private bool isGameActive = true;
@@ -245,10 +254,10 @@ public class PlaybackSlave : MonoBehaviour
     private List<int> _eatTimes;
     public BeatMap beatmap;
 
-    private void SetupQueueTimes()
+    private void SetupQueueTimes(int startingAt)
     {
-        _pokeTimes = beatmap.Beats.Select(i => i - 1).ToList();
-        _eatTimes = beatmap.FlickBeats.Select(i => i - 1).ToList();
+        _pokeTimes = beatmap.Beats.Where(i => i >= startingAt).Select(i => i - 1).ToList();
+        _eatTimes = beatmap.FlickBeats.Where(i => i >= startingAt).Select(i => i - 1).ToList();
     }
     
     private List<int> pressTimes = new List<int>();
