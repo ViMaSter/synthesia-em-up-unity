@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Audio;
+using Audio.BeatManagement;
 using UnityEditor;
 using UnityEngine;
 
-namespace Editor
+namespace Editor.Audio.BeatManagement
 {
     [CustomEditor(typeof(BeatMap))]
     [CanEditMultipleObjects]

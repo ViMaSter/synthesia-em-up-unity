@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Visuals
+namespace Audio.BeatManagement.Chopsticks.Aesthetics
 {
     public class BobHead : MonoBehaviour
     {

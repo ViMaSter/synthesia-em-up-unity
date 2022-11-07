@@ -3,12 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using Audio.BeatManagement.Chopsticks;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Audio
+namespace Audio.BeatManagement
 {
     public class BeatMapPlayer : MonoBehaviour
     {

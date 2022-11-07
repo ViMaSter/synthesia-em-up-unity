@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Audio
+namespace Audio.BeatManagement
 {
     [CreateAssetMenu(fileName = "New Beat Map", menuName = "Beat Map")]
     public class BeatMap : ScriptableObject
