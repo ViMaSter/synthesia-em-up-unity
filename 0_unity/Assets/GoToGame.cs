@@ -7,13 +7,13 @@ using UnityEngine.SceneManagement;
 public class GoToGame : MonoBehaviour
 {
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         StartCoroutine(CheckTime());
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (Input.touchCount >= 6)
         {
@@ -31,7 +31,7 @@ public class GoToGame : MonoBehaviour
         return dateTime;
     }
 
-    IEnumerator CheckTime()
+    private IEnumerator CheckTime()
     {
         var uwr = UnityWebRequest.Get("https://vincent.mahn.ke/prj/2022_xx_ben-b-2022/time.php");
         var a = uwr.SendWebRequest();

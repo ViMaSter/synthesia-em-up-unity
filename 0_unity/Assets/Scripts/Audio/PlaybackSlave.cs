@@ -166,7 +166,7 @@ namespace Audio
             }
         }
 
-        public IEnumerator ClearPeas()
+        private IEnumerator ClearPeas()
         {
             yield return new WaitForSeconds(0.33f);
             _peaCounter = 0;

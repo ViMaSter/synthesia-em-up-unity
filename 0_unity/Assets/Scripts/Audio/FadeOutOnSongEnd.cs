@@ -9,7 +9,7 @@ public class FadeOutOnSongEnd : MonoBehaviour
     public Image fadeImage;
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (music.time < (music.clip.length - 1f))
         {

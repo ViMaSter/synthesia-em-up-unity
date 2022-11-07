@@ -1,11 +1,14 @@
 using UnityEditor;
 using UnityEngine;
 
-public class AssetDatabaseExamples : MonoBehaviour
+namespace Editor
 {
-    [MenuItem("AssetDatabase/Force Reserialize Assets Example")]
-    static void UpdateGroundMaterials()
+    public class AssetDatabaseExamples : MonoBehaviour
     {
-        AssetDatabase.ForceReserializeAssets();
+        [MenuItem("AssetDatabase/Force Reserialize Assets Example")]
+        private static void UpdateGroundMaterials()
+        {
+            AssetDatabase.ForceReserializeAssets();
+        }
     }
 }

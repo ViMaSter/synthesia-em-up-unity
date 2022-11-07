@@ -21,7 +21,7 @@ public class AdvanceText : MonoBehaviour
     private WaitForSeconds _allowAdvanceAfterEnumerator;
 
 
-    void Awake()
+    private void Awake()
     {
         _textDisplayDelayEnumerator = new WaitForSeconds(_textDisplayDelay);
         _allowAdvanceAfterEnumerator = new WaitForSeconds(_allowAdvanceAfter);
@@ -29,12 +29,12 @@ public class AdvanceText : MonoBehaviour
         textElement.text = "";
     }
 
-    void Start()
+    private void Start()
     {
         StartCoroutine(InitialAdvance());
     }
 
-    IEnumerator InitialAdvance()
+    private IEnumerator InitialAdvance()
     {
         yield return new WaitForSeconds(0.5f);
         advanceSoundSource.PlayOneShot(advanceHoldSoundClip);
@@ -43,7 +43,7 @@ public class AdvanceText : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Advance()
+    private void Advance()
     {
         _allowAdvance = false;
         advanceIndicator.SetActive(false);
@@ -52,7 +52,7 @@ public class AdvanceText : MonoBehaviour
         StartCoroutine(QueueNextText());
     }
 
-    IEnumerator QueueNextText()
+    private IEnumerator QueueNextText()
     {
         yield return _textDisplayDelayEnumerator;
         if (_currentIndex >= statements.Length-1)
@@ -64,14 +64,14 @@ public class AdvanceText : MonoBehaviour
         StartCoroutine(AllowAdvance());
     }
 
-    IEnumerator AllowAdvance()
+    private IEnumerator AllowAdvance()
     {
         yield return _allowAdvanceAfterEnumerator;
         advanceIndicator.SetActive(true);
         _allowAdvance = true;
     }
 
-    void Update()
+    private void Update()
     {
         if (!_allowAdvance)
         {
@@ -80,7 +80,7 @@ public class AdvanceText : MonoBehaviour
         WaitForAdvance();
     }
 
-    void WaitForAdvance()
+    private void WaitForAdvance()
     {
         if (Input.touchCount <= 0 && !Input.GetMouseButton(1))
         {
@@ -105,7 +105,7 @@ public class AdvanceText : MonoBehaviour
         }
     }
 
-    void TextDone()
+    private void TextDone()
     {
         onDone.Invoke();
     }
