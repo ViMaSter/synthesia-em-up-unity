@@ -125,7 +125,7 @@ namespace Audio
         }
         private void PlayShot()
         {
-            ShootSfx.PlayScheduled(SecondsToNextBar + AudioSettings.dspTime);
+            ShootSFX.PlayScheduled(SecondsToNextBar + AudioSettings.dspTime);
             _pokeTimes.Remove(NextBarIndex);
             flickAnimator.Play("flick", 0, 0);
             PeaManager.Fire(SecondsToNextBar + BPSWithPrecision * beatmap.precision * 2);
@@ -146,12 +146,12 @@ namespace Audio
 
             if (hasHitAny)
             {
-                HitSfx.Play();
+                HitSFX.Play();
                 chopAnimator.Play("poke", 0, 0);
             }
             else
             {
-                WhiffSfx.Play();
+                WhiffSFX.Play();
                 chopAnimator.Play("whiff", 0, 0);
             }
         }
@@ -176,20 +176,20 @@ namespace Audio
             }
         }
 
-        public AudioSource[] shootSfxPool = Array.Empty<AudioSource>();
-        public int shootSfxIndex = -1;
+        public AudioSource[] shootSFXPool = Array.Empty<AudioSource>();
+        public int shootSFXIndex = -1;
 
-        public AudioSource ShootSfx
+        public AudioSource ShootSFX
         {
             get
             {
-                ++shootSfxIndex;
-                if (shootSfxIndex >= shootSfxPool.Length)
+                ++shootSFXIndex;
+                if (shootSFXIndex >= shootSFXPool.Length)
                 {
-                    shootSfxIndex = 0;
+                    shootSFXIndex = 0;
                 }
 
-                return shootSfxPool[shootSfxIndex];
+                return shootSFXPool[shootSFXIndex];
             }
         }
 
@@ -210,35 +210,35 @@ namespace Audio
             }
         }
     
-        public AudioSource[] hitSfxPool = Array.Empty<AudioSource>();
-        public int hitSfxIndex = -1;
-        public AudioSource HitSfx
+        public AudioSource[] hitSFXPool = Array.Empty<AudioSource>();
+        public int hitSFXIndex = -1;
+        public AudioSource HitSFX
         {
             get
             {
-                ++hitSfxIndex;
-                if (hitSfxIndex >= hitSfxPool.Length)
+                ++hitSFXIndex;
+                if (hitSFXIndex >= hitSFXPool.Length)
                 {
-                    hitSfxIndex = 0;
+                    hitSFXIndex = 0;
                 }
 
-                return hitSfxPool[hitSfxIndex];
+                return hitSFXPool[hitSFXIndex];
             }
         }
     
-        public AudioSource[] whiffSfxPool = Array.Empty<AudioSource>();
-        public int whiffSfxIndex = -1;
-        public AudioSource WhiffSfx
+        public AudioSource[] whiffSFXPool = Array.Empty<AudioSource>();
+        public int whiffSFXIndex = -1;
+        public AudioSource WhiffSFX
         {
             get
             {
-                ++whiffSfxIndex;
-                if (whiffSfxIndex >= whiffSfxPool.Length)
+                ++whiffSFXIndex;
+                if (whiffSFXIndex >= whiffSFXPool.Length)
                 {
-                    whiffSfxIndex = 0;
+                    whiffSFXIndex = 0;
                 }
 
-                return whiffSfxPool[whiffSfxIndex];
+                return whiffSFXPool[whiffSFXIndex];
             }
         }
 

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayEatSfx : MonoBehaviour
+public class PlayEatSFX : MonoBehaviour
 {
     private AudioSource _audioSource;
 

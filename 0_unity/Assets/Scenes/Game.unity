@@ -1330,26 +1330,26 @@ MonoBehaviour:
   - {fileID: 931759504}
   - {fileID: 2121363862}
   - {fileID: 830468198}
-  shootSfxPool:
+  shootSFXPool:
   - {fileID: 1536528010}
   - {fileID: 369887851}
   - {fileID: 590931281}
-  shootSfxIndex: -1
+  shootSFXIndex: -1
   peaManagerPool:
   - {fileID: 1963559792}
   - {fileID: 318293553}
   - {fileID: 1943180609}
   peaManagerIndex: -1
-  hitSfxPool:
+  hitSFXPool:
   - {fileID: 1982070648}
   - {fileID: 281548287}
   - {fileID: 1022292234}
-  hitSfxIndex: -1
-  whiffSfxPool:
+  hitSFXIndex: -1
+  whiffSFXPool:
   - {fileID: 859754921}
   - {fileID: 367683490}
   - {fileID: 414460006}
-  whiffSfxIndex: -1
+  whiffSFXIndex: -1
   beatmap: {fileID: 11400000, guid: b013058f7bf8947ab9ebe36b0628b697, type: 2}
 --- !u!1 &590931280
 GameObject:
