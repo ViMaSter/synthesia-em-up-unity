@@ -1,10 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class StartGame : MonoBehaviour
+namespace Dialogue
 {
-    public void LoadGameScene()
+    public class StartGame : MonoBehaviour
     {
-        SceneManager.LoadScene("Game");
+        public void LoadGameScene()
+        {
+            SceneManager.LoadScene("Game");
+        }
     }
 }

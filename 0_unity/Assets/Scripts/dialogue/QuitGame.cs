@@ -1,9 +1,12 @@
 using UnityEngine;
 
-public class QuitGame : MonoBehaviour
+namespace Dialogue
 {
-    public void Quit()
+    public class QuitGame : MonoBehaviour
     {
-        Application.Quit(0);
+        public void Quit()
+        {
+            Application.Quit(0);
+        }
     }
 }
