@@ -3,45 +3,48 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class FadeOutOnSongEnd : MonoBehaviour
+namespace Audio
 {
-    public AudioSource music;
-    public Image fadeImage;
-
-    // Update is called once per frame
-    private void Update()
+    public class FadeOutOnSongEnd : MonoBehaviour
     {
-        if (music.time < (music.clip.length - 1f))
+        public AudioSource music;
+        public Image fadeImage;
+
+        // Update is called once per frame
+        private void Update()
         {
-            return;
+            if (music.time < music.clip.length - 1f)
+            {
+                return;
+            }
+
+            StartCoroutine(FadeOut());
         }
 
-        StartCoroutine(FadeOut());
-    }
-    
-    public IEnumerator Fade(float targetOpacity, float time)
-    {
-        var completion = 0f;
-        var startVolume = fadeImage.color.a;
-        var startTime = Time.time;
-        while (completion < 1)
+        private IEnumerator Fade(float targetOpacity, float time)
         {
-            var tmpColor = fadeImage.color;
-            tmpColor.a = Mathf.Lerp(startVolume, targetOpacity, completion);
-            fadeImage.color = tmpColor;
-            completion = (Time.time - startTime) / time;
-            yield return null;
+            var completion = 0f;
+            var startVolume = fadeImage.color.a;
+            var startTime = Time.time;
+            while (completion < 1)
+            {
+                var tmpColor = fadeImage.color;
+                tmpColor.a = Mathf.Lerp(startVolume, targetOpacity, completion);
+                fadeImage.color = tmpColor;
+                completion = (Time.time - startTime) / time;
+                yield return null;
+            }
+
+            var newColor = fadeImage.color;
+            newColor.a = targetOpacity;
+            fadeImage.color = newColor;
         }
 
-        var newColor = fadeImage.color;
-        newColor.a = targetOpacity;
-        fadeImage.color = newColor;
-    }
-
-    private IEnumerator FadeOut()
-    {
-        yield return Fade(1, 2f);
-        yield return new WaitForSeconds(1f);
-        SceneManager.LoadScene("isOver");
+        private IEnumerator FadeOut()
+        {
+            yield return Fade(1, 2f);
+            yield return new WaitForSeconds(1f);
+            SceneManager.LoadScene("isOver");
+        }
     }
 }

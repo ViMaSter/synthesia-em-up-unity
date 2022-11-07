@@ -1,11 +1,14 @@
 using UnityEngine;
 
-public class BobHead : MonoBehaviour
+namespace Visuals
 {
-    public Animator animator;
-    
-    public void Bob()
+    public class BobHead : MonoBehaviour
     {
-        animator.Play("cathead", -1, 0.0f);
+        public Animator animator;
+    
+        public void Bob()
+        {
+            animator.Play("cathead", -1, 0.0f);
+        }
     }
 }
