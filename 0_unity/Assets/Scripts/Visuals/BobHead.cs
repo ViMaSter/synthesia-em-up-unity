@@ -8,7 +8,7 @@ namespace Visuals
     
         public void Bob()
         {
-            animator.Play("cathead", -1, 0.0f);
+            animator.Play("head", -1, 0.0f);
         }
     }
 }
