@@ -18,7 +18,7 @@ namespace Editor
         private SerializedProperty _beats;
         private SerializedProperty _flickBeats;
         
-        private PlaybackSlave _activeSlave;
+        private BeatMapPlayer _activeSlave;
         private bool _gameIsRunning;
 
         public BeatMapEditor()
@@ -36,7 +36,7 @@ namespace Editor
             };
             _activeSlave = obj switch
             {
-                PlayModeStateChange.EnteredPlayMode => FindObjectOfType<PlaybackSlave>(),
+                PlayModeStateChange.EnteredPlayMode => FindObjectOfType<BeatMapPlayer>(),
                 PlayModeStateChange.ExitingPlayMode => null,
                 _ => _activeSlave
             };
@@ -51,7 +51,7 @@ namespace Editor
             _beats = serializedObject.FindProperty(nameof(BeatMap.beats));
             _flickBeats = serializedObject.FindProperty(nameof(BeatMap.flickBeats));
 
-            _activeSlave = FindObjectOfType<PlaybackSlave>();
+            _activeSlave = FindObjectOfType<BeatMapPlayer>();
         }
 
         public override void OnInspectorGUI()

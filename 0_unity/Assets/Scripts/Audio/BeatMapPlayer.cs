@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace Audio
 {
-    public class PlaybackSlave : MonoBehaviour
+    public class BeatMapPlayer : MonoBehaviour
     {
         public AudioMixer mixer;
         public AudioSource master;
