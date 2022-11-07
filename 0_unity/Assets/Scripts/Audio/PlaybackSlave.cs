@@ -55,11 +55,6 @@ public class PlaybackSlave : MonoBehaviour
         master.time = time;
     }
 
-    private bool isGameActive = true;
-
-    private int RestoreAtBar = -1;
-    private bool isQueued = false;
-
     private IEnumerator QueueBarStartAt(int beatIndex, double absoluteTime)
     {
         if (AudioSettings.dspTime > absoluteTime)
