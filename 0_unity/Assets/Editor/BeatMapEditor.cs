@@ -38,8 +38,6 @@ namespace Editor
             EditorGUILayout.PropertyField(_precision);
             EditorGUILayout.PropertyField(_beatsUntilFirstBar);
             EditorGUILayout.PropertyField(_track);
-            // EditorGUILayout.PropertyField(Beats);
-            // EditorGUILayout.PropertyField(FlickBeats);
                 
             var buttonAndLabel = GUILayout.Width(40);
             var boxes = GUILayout.Width(80);
@@ -51,39 +49,39 @@ namespace Editor
             EditorGUILayout.LabelField("Eat", boxes);
             EditorGUILayout.EndHorizontal();
 
-            var a = new List<int>(0);
-            var a2 = new List<int>(0);
+            var activeBeatsIndices = new List<int>(0);
+            var activeFlickBeatsIndices = new List<int>(0);
             if (_flickBeats.arraySize != _beats.arraySize)
             {
                 _flickBeats.arraySize = _beats.arraySize;
             }
             for (var i = 0; i < _beats.arraySize; ++i)
             {
-                a.Add(_beats.GetArrayElementAtIndex(i).intValue);
-                a2.Add(_flickBeats.GetArrayElementAtIndex(i).intValue);
+                activeBeatsIndices.Add(_beats.GetArrayElementAtIndex(i).intValue);
+                activeFlickBeatsIndices.Add(_flickBeats.GetArrayElementAtIndex(i).intValue);
             }
 
-            var b = new List<bool>();
-            var b2 = new List<bool>();
-            var mostEntries = Math.Max(a.Max(), a2.Max());
+            var activeBeatsByIndex = new List<bool>();
+            var activeFlickBeatsByIndex = new List<bool>();
+            var mostEntries = Math.Max(activeBeatsIndices.Max(), activeFlickBeatsIndices.Max());
             var clip = (AudioClip)_track.objectReferenceValue;
             var beatsInSong = Math.Ceiling(clip.length * (_bpm.floatValue / 60.0f)) * 2;
 
             for (var i = 0; i <= Math.Max(mostEntries, beatsInSong); ++i)
             {
-                b.Add(a.Contains(i));
-                b2.Add(a2.Contains(i));
+                activeBeatsByIndex.Add(activeBeatsIndices.Contains(i));
+                activeFlickBeatsByIndex.Add(activeFlickBeatsIndices.Contains(i));
             }
         
             for (var i = 1; i < Math.Max(mostEntries, beatsInSong); ++i)
             {
-                if (b.Count < i)
+                if (activeBeatsByIndex.Count < i)
                 {
-                    b.Add(false);
+                    activeBeatsByIndex.Add(false);
                 }
-                if (b2.Count < i)
+                if (activeFlickBeatsByIndex.Count < i)
                 {
-                    b2.Add(false);
+                    activeFlickBeatsByIndex.Add(false);
                 }
                 var highlightedRow = new GUIStyle() {normal = new GUIStyleState(){background = Texture2D.grayTexture}};
                 var regularRow = new GUIStyle();
@@ -100,16 +98,16 @@ namespace Editor
                 }
                 EditorGUI.EndDisabledGroup();
                 EditorGUILayout.LabelField(i.ToString(), buttonAndLabel);
-                b[i] = EditorGUILayout.Toggle(b[i], boxes);
+                activeBeatsByIndex[i] = EditorGUILayout.Toggle(activeBeatsByIndex[i], boxes);
                 if (i < 4)
                 {
                     EditorGUILayout.Toggle(false, boxes);
                 }
                 else
                 {
-                    b[i-4] = EditorGUILayout.Toggle(b[i-4], boxes);
+                    activeBeatsByIndex[i-4] = EditorGUILayout.Toggle(activeBeatsByIndex[i-4], boxes);
                 }
-                b2[i] = EditorGUILayout.Toggle(b2[i], boxes);
+                activeFlickBeatsByIndex[i] = EditorGUILayout.Toggle(activeFlickBeatsByIndex[i], boxes);
                 EditorGUILayout.EndHorizontal();
                 if (i % 4 == 0)
                 {
@@ -121,13 +119,13 @@ namespace Editor
 
             var indices = new List<int>();
             var indices2 = new List<int>();
-            for (var i = 0; i < b.Count; i++)
+            for (var i = 0; i < activeBeatsByIndex.Count; i++)
             {
-                if (b[i])
+                if (activeBeatsByIndex[i])
                 {
                     indices.Add(i);
                 }
-                if (b2[i])
+                if (activeFlickBeatsByIndex[i])
                 {
                     indices2.Add(i);
                 }
