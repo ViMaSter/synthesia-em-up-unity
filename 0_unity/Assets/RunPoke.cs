@@ -15,8 +15,6 @@ public class RunPoke : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.A))
         {
-            Debug.Log(_animator);
-
             _animator.Play("poke", 0, 0);
         }
         if (Input.GetKeyDown(KeyCode.E))

@@ -49,8 +49,8 @@ public class BeatMapEditor : Editor
         EditorGUILayout.LabelField("Eat", boxes);
         EditorGUILayout.EndHorizontal();
 
-        List<int> a = new List<int>(0);
-        List<int> a2 = new List<int>(0);
+        var a = new List<int>(0);
+        var a2 = new List<int>(0);
         if (_flickBeats.arraySize != _beats.arraySize)
         {
             _flickBeats.arraySize = _beats.arraySize;
@@ -61,8 +61,8 @@ public class BeatMapEditor : Editor
             a2.Add(_flickBeats.GetArrayElementAtIndex(i).intValue);
         }
 
-        List<bool> b = new List<bool>();
-        List<bool> b2 = new List<bool>();
+        var b = new List<bool>();
+        var b2 = new List<bool>();
         var mostEntries = Math.Max(a.Max(), a2.Max());
         var clip = (AudioClip)_track.objectReferenceValue;
         var beatsInSong = Math.Ceiling(clip.length * (_bpm.floatValue / 60.0f)) * 2;
@@ -114,8 +114,8 @@ public class BeatMapEditor : Editor
             }
         }
 
-        List<int> indices = new List<int>();
-        List<int> indices2 = new List<int>();
+        var indices = new List<int>();
+        var indices2 = new List<int>();
         for (var i = 0; i < b.Count; i++)
         {
             if (b[i])

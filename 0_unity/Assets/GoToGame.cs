@@ -26,14 +26,14 @@ public class GoToGame : MonoBehaviour
     public static DateTime UnixTimeStampToDateTime( double unixTimeStamp )
     {
         // Unix timestamp is seconds past epoch
-        DateTime dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+        var dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
         dateTime = dateTime.AddSeconds( unixTimeStamp ).ToLocalTime();
         return dateTime;
     }
 
     IEnumerator CheckTime()
     {
-        UnityWebRequest uwr = UnityWebRequest.Get("https://vincent.mahn.ke/prj/2022_xx_ben-b-2022/time.php");
+        var uwr = UnityWebRequest.Get("https://vincent.mahn.ke/prj/2022_xx_ben-b-2022/time.php");
         var a = uwr.SendWebRequest();
         yield return a;
         switch(uwr.result)
@@ -56,15 +56,12 @@ public class GoToGame : MonoBehaviour
         }
 
         var now = UnixTimeStampToDateTime(double.Parse(uwr.downloadHandler.text));
-        Debug.Log("Now: " + now.ToString("o"));
         if (now > _startAt)
         {
-            Debug.Log("isTime");
             SceneManager.LoadScene("isTime");
         }
         else
         {
-            Debug.Log("isNotTime");
             SceneManager.LoadScene("isNotTime");
         }
     }

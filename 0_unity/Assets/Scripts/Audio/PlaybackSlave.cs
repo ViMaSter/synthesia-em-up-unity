@@ -33,7 +33,6 @@ namespace Audio
 
         public void Start()
         {
-            Debug.Log(BeatOneOneOffset);
             mixer.SetFloat("GameVolume", 0.0f);
             mixer.SetFloat("MenuVolume", -80);
             _bpm = beatmap.bpm;
@@ -58,7 +57,6 @@ namespace Audio
         {
             if (AudioSettings.dspTime > absoluteTime)
             {
-                Debug.LogWarning($"Attempting to queue beat {beatIndex} was {AudioSettings.dspTime - absoluteTime}");
                 yield break;
             }
             yield return new WaitForSeconds((float)(AudioSettings.dspTime - absoluteTime));
@@ -69,7 +67,6 @@ namespace Audio
         {
             if (AudioSettings.dspTime > absoluteTime)
             {
-                Debug.LogWarning($"Attempting to queue beat {bpmIndex} was {AudioSettings.dspTime - absoluteTime} too late");
                 yield break;
             }
             yield return new WaitForSeconds((float)(AudioSettings.dspTime - absoluteTime));
@@ -138,7 +135,7 @@ namespace Audio
         public Animator chopAnimator;
         private void PlayPoke()
         {
-            bool hasHitAny = false;
+            var hasHitAny = false;
             foreach (var manager in peaManagerPool)
             {
                 if (manager.AttemptHit())
