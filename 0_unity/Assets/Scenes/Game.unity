@@ -1350,7 +1350,7 @@ MonoBehaviour:
   - {fileID: 367683490}
   - {fileID: 414460006}
   whiffSFXIndex: -1
-  beatmap: {fileID: 11400000, guid: b013058f7bf8947ab9ebe36b0628b697, type: 2}
+  beatMap: {fileID: 11400000, guid: b013058f7bf8947ab9ebe36b0628b697, type: 2}
 --- !u!1 &590931280
 GameObject:
   m_ObjectHideFlags: 0

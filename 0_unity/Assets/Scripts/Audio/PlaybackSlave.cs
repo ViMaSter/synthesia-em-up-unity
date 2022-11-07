@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Audio
@@ -18,8 +19,8 @@ namespace Audio
         public UnityEvent<int> onBeatStart;
 
         private float _bpm;
-        private float BPSWithPrecision => 60 / (_bpm * beatmap.precision);
-        private float BeatOneOneOffset => beatmap.beatsUntilFirstBar * beatmap.precision;
+        private float BPSWithPrecision => 60 / (_bpm * beatMap.precision);
+        private float BeatOneOneOffset => beatMap.beatsUntilFirstBar * beatMap.precision;
         private float SecondsToNextBar => BPSWithPrecision * 4 - (master.time + BPSWithPrecision * BeatOneOneOffset) % (BPSWithPrecision * 4);
         private float BeatOffset => SecondsToNextBar - BPSWithPrecision * 2;
         public int NextBarIndex => (int)Math.Floor((master.time - BPSWithPrecision * BeatOneOneOffset) / (BPSWithPrecision * 4)) + 1;
@@ -35,8 +36,8 @@ namespace Audio
         {
             mixer.SetFloat("GameVolume", 0.0f);
             mixer.SetFloat("MenuVolume", -80);
-            _bpm = beatmap.bpm;
-            master.clip = beatmap.track;
+            _bpm = beatMap.bpm;
+            master.clip = beatMap.track;
             master.Play();
             if (Debug.isDebugBuild)
             {
@@ -132,7 +133,7 @@ namespace Audio
             ShootSFX.PlayScheduled(SecondsToNextBar + AudioSettings.dspTime);
             _pokeTimes.Remove(NextBarIndex);
             flickAnimator.Play("flick", 0, 0);
-            PeaManager.Fire(SecondsToNextBar + BPSWithPrecision * beatmap.precision * 2);
+            PeaManager.Fire(SecondsToNextBar + BPSWithPrecision * beatMap.precision * 2);
         }
 
         public Animator chopAnimator;
@@ -248,12 +249,12 @@ namespace Audio
 
         private List<int> _pokeTimes = new();
         private List<int> _eatTimes;
-        public BeatMap beatmap;
+        public BeatMap beatMap;
 
         private void SetupQueueTimes(int startingAt)
         {
-            _pokeTimes = beatmap.beats.Where(i => i >= startingAt).Select(i => i - 1).ToList();
-            _eatTimes = beatmap.flickBeats.Where(i => i >= startingAt).Select(i => i - 1).ToList();
+            _pokeTimes = beatMap.beats.Where(i => i >= startingAt).Select(i => i - 1).ToList();
+            _eatTimes = beatMap.flickBeats.Where(i => i >= startingAt).Select(i => i - 1).ToList();
         }
     
         private readonly List<int> _pressTimes = new();
