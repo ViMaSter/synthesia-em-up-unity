@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -13,8 +14,8 @@ namespace Audio
     {
         public AudioMixer mixer;
         public AudioSource master;
-        public UnityEvent onBarStart;
-        public UnityEvent onBeatStart;
+        public UnityEvent<int> onBarStart;
+        public UnityEvent<int> onBeatStart;
 
         private float _bpm;
         private float BPSWithPrecision => 60 / (_bpm * beatmap.precision);
@@ -47,8 +48,7 @@ namespace Audio
         {
             SetupQueueTimes(beat);
 
-            var time = BPSWithPrecision * (beat - 1) * 4 +
-                       BPSWithPrecision * BeatOneOneOffset;
+            var time = BPSWithPrecision * (beat - 1) * 4 + BPSWithPrecision * BeatOneOneOffset;
             master.time = time;
         }
 
@@ -59,7 +59,7 @@ namespace Audio
                 yield break;
             }
             yield return new WaitForSeconds((float)(AudioSettings.dspTime - absoluteTime));
-            onBarStart.Invoke();
+            onBarStart.Invoke(beatIndex);
         }
 
         private IEnumerator QueueBeatStartAt(int bpmIndex, double absoluteTime)
@@ -69,7 +69,7 @@ namespace Audio
                 yield break;
             }
             yield return new WaitForSeconds((float)(AudioSettings.dspTime - absoluteTime));
-            onBeatStart.Invoke();
+            onBeatStart.Invoke(bpmIndex);
         }
 
         private readonly List<int> _queuedBeats = new List<int>(1000);
@@ -176,7 +176,7 @@ namespace Audio
             }
         }
 
-        public AudioSource[] shootSfxPool = new AudioSource[0];
+        public AudioSource[] shootSfxPool = Array.Empty<AudioSource>();
         public int shootSfxIndex = -1;
 
         public AudioSource ShootSfx
@@ -193,7 +193,7 @@ namespace Audio
             }
         }
 
-        public PeaManager[] peaManagerPool = new PeaManager[0];
+        public PeaManager[] peaManagerPool = Array.Empty<PeaManager>();
         public int peaManagerIndex = -1;
 
         public PeaManager PeaManager
@@ -210,7 +210,7 @@ namespace Audio
             }
         }
     
-        public AudioSource[] hitSfxPool = new AudioSource[0];
+        public AudioSource[] hitSfxPool = Array.Empty<AudioSource>();
         public int hitSfxIndex = -1;
         public AudioSource HitSfx
         {
@@ -226,7 +226,7 @@ namespace Audio
             }
         }
     
-        public AudioSource[] whiffSfxPool = new AudioSource[0];
+        public AudioSource[] whiffSfxPool = Array.Empty<AudioSource>();
         public int whiffSfxIndex = -1;
         public AudioSource WhiffSfx
         {
@@ -271,10 +271,10 @@ namespace Audio
         
             GUI.Label(new Rect(0, 0, 200, 20), "Time until next bar: ");
             GUI.HorizontalSlider(new Rect(200, 0, 500, 20), SecondsToNextBar, 0f, BPSWithPrecision*4);
-            GUI.Label(new Rect(700, 0, 200, 20), SecondsToNextBar.ToString());
+            GUI.Label(new Rect(700, 0, 200, 20), SecondsToNextBar.ToString(CultureInfo.InvariantCulture));
             GUI.HorizontalSlider(new Rect(200, 40, 1500, 20), BeatOffset, -BPSWithPrecision*2, BPSWithPrecision*2);
             GUI.Box(new Rect(200+750, 30, 1, 40), Texture2D.redTexture);
-            GUI.Label(new Rect(700, 40, 800, 20), BeatOffset.ToString());
+            GUI.Label(new Rect(700, 40, 800, 20), BeatOffset.ToString(CultureInfo.InvariantCulture));
             GUI.Label(new Rect(0, 60, 500, 20), "Next bar index: " + (NextBarIndex));
 
             GUI.Label(new Rect(0, 100, 500, 20), "Recs: " + string.Join(", ", _pressTimes));
