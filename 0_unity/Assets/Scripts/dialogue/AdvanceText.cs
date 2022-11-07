@@ -2,6 +2,7 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class AdvanceText : MonoBehaviour
 {
@@ -11,20 +12,20 @@ public class AdvanceText : MonoBehaviour
     public AudioClip advanceHoldSoundClip;
     public AudioClip advanceReleaseSoundClip;
     public string[] statements = new string[] {};
-    public UnityEvent OnDone;
+    public UnityEvent onDone;
 
-    private int currentIndex = -1;
-    private bool allowAdvance = false;
-    private float textDisplayDelay = 15.0f / 30.0f;
-    private float allowAdvanceAfter = 40.0f / 30.0f;
-    private WaitForSeconds _textDisplayDelay;
-    private WaitForSeconds _allowAdvanceAfter;
+    private int _currentIndex = -1;
+    private bool _allowAdvance;
+    private readonly float _textDisplayDelay = 15.0f / 30.0f;
+    private readonly float _allowAdvanceAfter = 40.0f / 30.0f;
+    private WaitForSeconds _textDisplayDelayEnumerator;
+    private WaitForSeconds _allowAdvanceAfterEnumerator;
 
 
     void Awake()
     {
-        _textDisplayDelay = new WaitForSeconds(textDisplayDelay);
-        _allowAdvanceAfter = new WaitForSeconds(allowAdvanceAfter);
+        _textDisplayDelayEnumerator = new WaitForSeconds(_textDisplayDelay);
+        _allowAdvanceAfterEnumerator = new WaitForSeconds(_allowAdvanceAfter);
         advanceIndicator.SetActive(false);
         textElement.text = "";
     }
@@ -45,7 +46,7 @@ public class AdvanceText : MonoBehaviour
     // Update is called once per frame
     void Advance()
     {
-        allowAdvance = false;
+        _allowAdvance = false;
         advanceIndicator.SetActive(false);
         advanceSoundSource.PlayOneShot(advanceReleaseSoundClip);
         textElement.text = "";
@@ -54,26 +55,26 @@ public class AdvanceText : MonoBehaviour
 
     IEnumerator QueueNextText()
     {
-        yield return _textDisplayDelay;
-        if (currentIndex >= statements.Length-1)
+        yield return _textDisplayDelayEnumerator;
+        if (_currentIndex >= statements.Length-1)
         {
             TextDone();
             yield break;
         }
-        textElement.text = statements[++currentIndex];
+        textElement.text = statements[++_currentIndex];
         StartCoroutine(AllowAdvance());
     }
 
     IEnumerator AllowAdvance()
     {
-        yield return _allowAdvanceAfter;
+        yield return _allowAdvanceAfterEnumerator;
         advanceIndicator.SetActive(true);
-        allowAdvance = true;
+        _allowAdvance = true;
     }
 
     void Update()
     {
-        if (!allowAdvance)
+        if (!_allowAdvance)
         {
             return;
         }
@@ -107,6 +108,6 @@ public class AdvanceText : MonoBehaviour
 
     void TextDone()
     {
-        OnDone.Invoke();
+        onDone.Invoke();
     }
 }

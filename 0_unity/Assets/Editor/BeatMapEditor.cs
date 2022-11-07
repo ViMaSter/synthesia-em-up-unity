@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Audio;
 using UnityEditor;
 using UnityEngine;
 
@@ -8,33 +9,33 @@ using UnityEngine;
 [CanEditMultipleObjects]
 public class BeatMapEditor : Editor
 {
-    private SerializedProperty BPM;
-    private SerializedProperty Precision;
-    private SerializedProperty BeatsUntilFirstBar;
-    private SerializedProperty Track;
-    private SerializedProperty Beats;
-    private SerializedProperty FlickBeats;
-    private PlaybackSlave activeSlave;
+    private SerializedProperty _bpm;
+    private SerializedProperty _precision;
+    private SerializedProperty _beatsUntilFirstBar;
+    private SerializedProperty _track;
+    private SerializedProperty _beats;
+    private SerializedProperty _flickBeats;
+    private PlaybackSlave _activeSlave;
 
     void OnEnable()
     {
-        BPM = serializedObject.FindProperty(nameof(BeatMap.BPM));
-        Precision = serializedObject.FindProperty(nameof(BeatMap.Precision));
-        BeatsUntilFirstBar = serializedObject.FindProperty(nameof(BeatMap.BeatsUntilFirstBar));
-        Track = serializedObject.FindProperty(nameof(BeatMap.Track));
-        Beats = serializedObject.FindProperty(nameof(BeatMap.Beats));
-        FlickBeats = serializedObject.FindProperty(nameof(BeatMap.FlickBeats));
+        _bpm = serializedObject.FindProperty(nameof(BeatMap.bpm));
+        _precision = serializedObject.FindProperty(nameof(BeatMap.precision));
+        _beatsUntilFirstBar = serializedObject.FindProperty(nameof(BeatMap.beatsUntilFirstBar));
+        _track = serializedObject.FindProperty(nameof(BeatMap.track));
+        _beats = serializedObject.FindProperty(nameof(BeatMap.beats));
+        _flickBeats = serializedObject.FindProperty(nameof(BeatMap.flickBeats));
 
-        activeSlave = GameObject.FindObjectOfType<PlaybackSlave>();
+        _activeSlave = GameObject.FindObjectOfType<PlaybackSlave>();
     }
 
     public override void OnInspectorGUI()
     {
         serializedObject.Update();
-        EditorGUILayout.PropertyField(BPM);
-        EditorGUILayout.PropertyField(Precision);
-        EditorGUILayout.PropertyField(BeatsUntilFirstBar);
-        EditorGUILayout.PropertyField(Track);
+        EditorGUILayout.PropertyField(_bpm);
+        EditorGUILayout.PropertyField(_precision);
+        EditorGUILayout.PropertyField(_beatsUntilFirstBar);
+        EditorGUILayout.PropertyField(_track);
         // EditorGUILayout.PropertyField(Beats);
         // EditorGUILayout.PropertyField(FlickBeats);
                 
@@ -50,21 +51,21 @@ public class BeatMapEditor : Editor
 
         List<int> a = new List<int>(0);
         List<int> a2 = new List<int>(0);
-        if (FlickBeats.arraySize != Beats.arraySize)
+        if (_flickBeats.arraySize != _beats.arraySize)
         {
-            FlickBeats.arraySize = Beats.arraySize;
+            _flickBeats.arraySize = _beats.arraySize;
         }
-        for (var i = 0; i < Beats.arraySize; ++i)
+        for (var i = 0; i < _beats.arraySize; ++i)
         {
-            a.Add(Beats.GetArrayElementAtIndex(i).intValue);
-            a2.Add(FlickBeats.GetArrayElementAtIndex(i).intValue);
+            a.Add(_beats.GetArrayElementAtIndex(i).intValue);
+            a2.Add(_flickBeats.GetArrayElementAtIndex(i).intValue);
         }
 
         List<bool> b = new List<bool>();
         List<bool> b2 = new List<bool>();
         var mostEntries = Math.Max(a.Max(), a2.Max());
-        var clip = (AudioClip)Track.objectReferenceValue;
-        var beatsInSong = Math.Ceiling(clip.length * (BPM.floatValue / 60.0f)) * 2;
+        var clip = (AudioClip)_track.objectReferenceValue;
+        var beatsInSong = Math.Ceiling(clip.length * (_bpm.floatValue / 60.0f)) * 2;
 
         for (var i = 0; i <= Math.Max(mostEntries, beatsInSong); ++i)
         {
@@ -85,12 +86,12 @@ public class BeatMapEditor : Editor
             var borderstyle = new GUIStyle() {normal = new GUIStyleState(){background = Texture2D.grayTexture}};
             var style = new GUIStyle();
             
-            EditorGUILayout.BeginHorizontal(activeSlave?.NextBarIndex == i ? borderstyle : style);
+            EditorGUILayout.BeginHorizontal(_activeSlave?.NextBarIndex == i ? borderstyle : style);
             if (GUILayout.Button("▶️", buttonAndLabel))
             {
-                if (activeSlave)
+                if (_activeSlave)
                 {
-                    activeSlave.JumpTo(i);
+                    _activeSlave.JumpTo(i);
                 }
             }
             EditorGUILayout.LabelField(i.ToString(), buttonAndLabel);
@@ -127,24 +128,24 @@ public class BeatMapEditor : Editor
             }
         }
         
-        Beats.ClearArray();
-        FlickBeats.ClearArray();
+        _beats.ClearArray();
+        _flickBeats.ClearArray();
         for (var i = 0; i < indices.Count; i++)
         {
-            Beats.InsertArrayElementAtIndex(i);
-            Beats.GetArrayElementAtIndex(i).intValue = indices[i];
+            _beats.InsertArrayElementAtIndex(i);
+            _beats.GetArrayElementAtIndex(i).intValue = indices[i];
         }
         for (var i = 0; i < indices2.Count; i++)
         {
-            FlickBeats.InsertArrayElementAtIndex(i);
-            FlickBeats.GetArrayElementAtIndex(i).intValue = indices2[i];
+            _flickBeats.InsertArrayElementAtIndex(i);
+            _flickBeats.GetArrayElementAtIndex(i).intValue = indices2[i];
         }
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Add beat"))
         {
             var lastCount = indices.Count;
-            Beats.InsertArrayElementAtIndex(lastCount);
-            Beats.GetArrayElementAtIndex(lastCount).intValue = Beats.GetArrayElementAtIndex(lastCount - 1).intValue+1;
+            _beats.InsertArrayElementAtIndex(lastCount);
+            _beats.GetArrayElementAtIndex(lastCount).intValue = _beats.GetArrayElementAtIndex(lastCount - 1).intValue+1;
         }
         EditorGUILayout.EndHorizontal();
         

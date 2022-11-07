@@ -501,7 +501,7 @@ MonoBehaviour:
   - Spiele machen ist dann irgendwie doch schwieriger als erwartet.
   - Ach ja und alles Gute!
   - Bis bald!
-  OnDone:
+  onDone:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 509408061}

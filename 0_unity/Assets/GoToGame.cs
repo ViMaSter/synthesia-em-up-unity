@@ -9,7 +9,7 @@ public class GoToGame : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine(checkTime());
+        StartCoroutine(CheckTime());
     }
 
     // Update is called once per frame
@@ -21,7 +21,7 @@ public class GoToGame : MonoBehaviour
         }
     }
 
-    private readonly DateTime startAt = new DateTime(2022, 11, 6, 0, 0, 0);
+    private readonly DateTime _startAt = new DateTime(2022, 11, 6, 0, 0, 0);
     
     public static DateTime UnixTimeStampToDateTime( double unixTimeStamp )
     {
@@ -31,7 +31,7 @@ public class GoToGame : MonoBehaviour
         return dateTime;
     }
 
-    IEnumerator checkTime()
+    IEnumerator CheckTime()
     {
         UnityWebRequest uwr = UnityWebRequest.Get("https://vincent.mahn.ke/prj/2022_xx_ben-b-2022/time.php");
         var a = uwr.SendWebRequest();
@@ -57,7 +57,7 @@ public class GoToGame : MonoBehaviour
 
         var now = UnixTimeStampToDateTime(double.Parse(uwr.downloadHandler.text));
         Debug.Log("Now: " + now.ToString("o"));
-        if (now > startAt)
+        if (now > _startAt)
         {
             Debug.Log("isTime");
             SceneManager.LoadScene("isTime");

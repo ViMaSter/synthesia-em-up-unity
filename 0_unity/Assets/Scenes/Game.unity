@@ -1323,33 +1323,33 @@ MonoBehaviour:
   onBeatStart:
     m_PersistentCalls:
       m_Calls: []
-  DebugStartAtSeconds: 15
+  debugStartAtSeconds: 15
   flickAnimator: {fileID: 661473653}
   chopAnimator: {fileID: 1235628682}
   peaSlots:
   - {fileID: 931759504}
   - {fileID: 2121363862}
   - {fileID: 830468198}
-  shootSFXPool:
+  shootSfxPool:
   - {fileID: 1536528010}
   - {fileID: 369887851}
   - {fileID: 590931281}
-  shootSFXIndex: -1
+  shootSfxIndex: -1
   peaManagerPool:
   - {fileID: 1963559792}
   - {fileID: 318293553}
   - {fileID: 1943180609}
   peaManagerIndex: -1
-  hitSFXPool:
+  hitSfxPool:
   - {fileID: 1982070648}
   - {fileID: 281548287}
   - {fileID: 1022292234}
-  hitSFXIndex: -1
-  whiffSFXPool:
+  hitSfxIndex: -1
+  whiffSfxPool:
   - {fileID: 859754921}
   - {fileID: 367683490}
   - {fileID: 414460006}
-  whiffSFXIndex: -1
+  whiffSfxIndex: -1
   beatmap: {fileID: 11400000, guid: b013058f7bf8947ab9ebe36b0628b697, type: 2}
 --- !u!1 &590931280
 GameObject:
