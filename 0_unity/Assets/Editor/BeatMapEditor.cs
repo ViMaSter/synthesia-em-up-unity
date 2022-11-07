@@ -17,7 +17,30 @@ namespace Editor
         private SerializedProperty _track;
         private SerializedProperty _beats;
         private SerializedProperty _flickBeats;
+        
         private PlaybackSlave _activeSlave;
+        private bool _gameIsRunning;
+
+        public BeatMapEditor()
+        {
+            EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
+        }
+
+        private void OnPlayModeStateChanged(PlayModeStateChange obj)
+        {
+            _gameIsRunning = obj switch
+            {
+                PlayModeStateChange.EnteredPlayMode => true,
+                PlayModeStateChange.ExitingPlayMode => false,
+                _ => _gameIsRunning
+            };
+            _activeSlave = obj switch
+            {
+                PlayModeStateChange.EnteredPlayMode => FindObjectOfType<PlaybackSlave>(),
+                PlayModeStateChange.ExitingPlayMode => null,
+                _ => _activeSlave
+            };
+        }
 
         private void OnEnable()
         {
@@ -86,12 +109,12 @@ namespace Editor
                 var highlightedRow = new GUIStyle {normal = new GUIStyleState {background = Texture2D.grayTexture}};
                 var regularRow = new GUIStyle();
 
-                var isSlaveNull = _activeSlave == null; 
-                EditorGUI.BeginDisabledGroup(isSlaveNull);
-                EditorGUILayout.BeginHorizontal(!isSlaveNull && _activeSlave.NextBarIndex == i ? highlightedRow : regularRow);
+                // ReSharper disable once Unity.PerformanceCriticalCodeNullComparison needed to update when game is running
+                EditorGUI.BeginDisabledGroup(!_gameIsRunning);
+                EditorGUILayout.BeginHorizontal(_gameIsRunning && _activeSlave.NextBarIndex == i ? highlightedRow : regularRow);
                 if (GUILayout.Button("▶️", buttonAndLabel))
                 {
-                    if (_activeSlave)
+                    if (_gameIsRunning)
                     {
                         _activeSlave.JumpTo(i);
                     }
