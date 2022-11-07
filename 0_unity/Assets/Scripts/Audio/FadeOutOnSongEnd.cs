@@ -10,7 +10,6 @@ namespace Audio
         public AudioSource music;
         public Image fadeImage;
 
-        // Update is called once per frame
         private void Update()
         {
             if (music.time < music.clip.length - 1f)

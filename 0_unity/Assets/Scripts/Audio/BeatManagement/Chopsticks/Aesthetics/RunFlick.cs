@@ -6,13 +6,11 @@ namespace Audio.BeatManagement.Chopsticks.Aesthetics
     {
         private Animator _animator;
 
-        // Start is called before the first frame update
         private void Start()
         {
             _animator = GetComponent<Animator>();
         }
 
-        // Update is called once per frame
         private void Update()
         {
             if (Input.GetKeyDown(KeyCode.F))
