@@ -6,7 +6,6 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Audio
@@ -109,7 +108,7 @@ namespace Audio
             {
                 return;
             }
-            if (_lastPokeAt + _pokePause >= Time.time)
+            if (_lastPokeAt + PokePause >= Time.time)
             {
                 return;
             }
@@ -142,11 +141,12 @@ namespace Audio
             var hasHitAny = false;
             foreach (var manager in peaManagerPool)
             {
-                if (manager.AttemptHit())
+                if (!manager.AttemptHit())
                 {
-                    hasHitAny = true;
-                    IncreasePeaCounter();
+                    continue;
                 }
+                hasHitAny = true;
+                IncreasePeaCounter();
             }
 
             if (hasHitAny)
@@ -184,7 +184,7 @@ namespace Audio
         public AudioSource[] shootSFXPool = Array.Empty<AudioSource>();
         public int shootSFXIndex = -1;
 
-        public AudioSource ShootSFX
+        private AudioSource ShootSFX
         {
             get
             {
@@ -201,7 +201,7 @@ namespace Audio
         public PeaManager[] peaManagerPool = Array.Empty<PeaManager>();
         public int peaManagerIndex = -1;
 
-        public PeaManager PeaManager
+        private PeaManager PeaManager
         {
             get
             {
@@ -217,7 +217,8 @@ namespace Audio
     
         public AudioSource[] hitSFXPool = Array.Empty<AudioSource>();
         public int hitSFXIndex = -1;
-        public AudioSource HitSFX
+
+        private AudioSource HitSFX
         {
             get
             {
@@ -233,7 +234,8 @@ namespace Audio
     
         public AudioSource[] whiffSFXPool = Array.Empty<AudioSource>();
         public int whiffSFXIndex = -1;
-        public AudioSource WhiffSFX
+
+        private AudioSource WhiffSFX
         {
             get
             {
@@ -264,7 +266,7 @@ namespace Audio
         }
 
         private float _lastPokeAt = -1f;
-        private readonly float _pokePause = 0.110f;
+        private const float PokePause = 0.110f;
         private int _peaCounter;
 
         private void OnGUI()
@@ -283,7 +285,7 @@ namespace Audio
             GUI.Label(new Rect(0, 60, 500, 20), "Next bar index: " + NextBarIndex);
 
             GUI.Label(new Rect(0, 100, 500, 20), "Recs: " + string.Join(", ", _pressTimes));
-            GUI.Label(new Rect(0, 100, 500, 20),"IsRec: " + (_pokeTimes.Contains(NextBarIndex-1) ? "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": ""));
+            GUI.Label(new Rect(0, 100, 500, 20),"IsRec: " + (_pokeTimes.Contains(NextBarIndex-1) ? "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!": ""));
         }
     }
 }
