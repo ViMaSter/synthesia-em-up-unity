@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "New Beat Map", menuName = "Beat Map")]
 public class BeatMap : ScriptableObject
