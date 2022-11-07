@@ -36,9 +36,23 @@ public class GoToGame : MonoBehaviour
         UnityWebRequest uwr = UnityWebRequest.Get("https://vincent.mahn.ke/prj/2022_xx_ben-b-2022/time.php");
         var a = uwr.SendWebRequest();
         yield return a;
-        if (uwr.isNetworkError)
+        switch(uwr.result)
         {
-            Application.Quit(2);
+            case UnityWebRequest.Result.InProgress:
+                break;
+            case UnityWebRequest.Result.Success:
+                break;
+            case UnityWebRequest.Result.ConnectionError:
+                Application.Quit(2);
+                break;
+            case UnityWebRequest.Result.ProtocolError:
+                Application.Quit(3);
+                break;
+            case UnityWebRequest.Result.DataProcessingError:
+                Application.Quit(4);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
 
         var now = UnixTimeStampToDateTime(double.Parse(uwr.downloadHandler.text));
