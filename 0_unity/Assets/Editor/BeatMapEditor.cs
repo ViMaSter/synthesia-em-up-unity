@@ -28,7 +28,7 @@ namespace Editor
             _beats = serializedObject.FindProperty(nameof(BeatMap.beats));
             _flickBeats = serializedObject.FindProperty(nameof(BeatMap.flickBeats));
 
-            _activeSlave = GameObject.FindObjectOfType<PlaybackSlave>();
+            _activeSlave = FindObjectOfType<PlaybackSlave>();
         }
 
         public override void OnInspectorGUI()
@@ -83,7 +83,7 @@ namespace Editor
                 {
                     activeFlickBeatsByIndex.Add(false);
                 }
-                var highlightedRow = new GUIStyle() {normal = new GUIStyleState(){background = Texture2D.grayTexture}};
+                var highlightedRow = new GUIStyle {normal = new GUIStyleState {background = Texture2D.grayTexture}};
                 var regularRow = new GUIStyle();
 
                 var isSlaveNull = _activeSlave == null; 
@@ -109,12 +109,13 @@ namespace Editor
                 }
                 activeFlickBeatsByIndex[i] = EditorGUILayout.Toggle(activeFlickBeatsByIndex[i], boxes);
                 EditorGUILayout.EndHorizontal();
-                if (i % 4 == 0)
+                if (i % 4 != 0)
                 {
-                    EditorGUILayout.BeginHorizontal();
-                    EditorGUILayout.Separator();
-                    EditorGUILayout.EndHorizontal();
+                    continue;
                 }
+                EditorGUILayout.BeginHorizontal();
+                EditorGUILayout.Separator();
+                EditorGUILayout.EndHorizontal();
             }
 
             var indices = new List<int>();

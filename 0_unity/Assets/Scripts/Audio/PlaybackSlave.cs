@@ -72,7 +72,7 @@ namespace Audio
             onBeatStart.Invoke(bpmIndex);
         }
 
-        private readonly List<int> _queuedBeats = new List<int>(1000);
+        private readonly List<int> _queuedBeats = new(1000);
 
         private void Update()
         {
@@ -242,7 +242,7 @@ namespace Audio
             }
         }
 
-        private List<int> _pokeTimes = new List<int>();
+        private List<int> _pokeTimes = new();
         private List<int> _eatTimes;
         public BeatMap beatmap;
 
@@ -252,7 +252,7 @@ namespace Audio
             _eatTimes = beatmap.flickBeats.Where(i => i >= startingAt).Select(i => i - 1).ToList();
         }
     
-        private readonly List<int> _pressTimes = new List<int>();
+        private readonly List<int> _pressTimes = new();
         private void Record()
         {
             _pressTimes.Add(NextBarIndex);

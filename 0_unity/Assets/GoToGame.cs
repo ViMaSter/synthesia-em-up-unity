@@ -17,13 +17,13 @@ public class GoToGame : MonoBehaviour
     {
         if (Input.touchCount >= 6)
         {
-            SceneManager.LoadScene("Scenes/AudioTest");
+            SceneManager.LoadScene("Scenes/Game");
         }
     }
 
-    private readonly DateTime _startAt = new DateTime(2022, 11, 6, 0, 0, 0);
-    
-    public static DateTime UnixTimeStampToDateTime( double unixTimeStamp )
+    private readonly DateTime _startAt = new(2022, 11, 6, 0, 0, 0);
+
+    private static DateTime UnixTimeStampToDateTime( double unixTimeStamp )
     {
         // Unix timestamp is seconds past epoch
         var dateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
@@ -56,13 +56,12 @@ public class GoToGame : MonoBehaviour
         }
 
         var now = UnixTimeStampToDateTime(double.Parse(uwr.downloadHandler.text));
-        if (now > _startAt)
-        {
-            SceneManager.LoadScene("isTime");
-        }
-        else
+        if (now <= _startAt)
         {
             SceneManager.LoadScene("isNotTime");
+            yield break;
         }
+        
+        SceneManager.LoadScene("isTime");
     }
 }

@@ -9,6 +9,7 @@ public class PlayEatSFX : MonoBehaviour
         _audioSource = GetComponent<AudioSource>();
     }
 
+    // ReSharper disable once UnusedMember.Global Used by UnityEvent
     public void PlayEat()
     {
         _audioSource.Play();
