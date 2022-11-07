@@ -20,9 +20,9 @@ namespace Audio
         private float _bpm;
         private float BPSWithPrecision => 60 / (_bpm * beatmap.precision);
         private float BeatOneOneOffset => beatmap.beatsUntilFirstBar * beatmap.precision;
-        private float SecondsToNextBar => (BPSWithPrecision * 4) - ((master.time + (BPSWithPrecision * BeatOneOneOffset)) % (BPSWithPrecision * 4));
-        private float BeatOffset => SecondsToNextBar - (BPSWithPrecision * 2);
-        public int NextBarIndex => (int)Math.Floor((master.time - (BPSWithPrecision * BeatOneOneOffset)) / (BPSWithPrecision * 4)) + 1;
+        private float SecondsToNextBar => BPSWithPrecision * 4 - (master.time + BPSWithPrecision * BeatOneOneOffset) % (BPSWithPrecision * 4);
+        private float BeatOffset => SecondsToNextBar - BPSWithPrecision * 2;
+        public int NextBarIndex => (int)Math.Floor((master.time - BPSWithPrecision * BeatOneOneOffset) / (BPSWithPrecision * 4)) + 1;
 
         public float debugStartAtSeconds;
 
@@ -79,7 +79,7 @@ namespace Audio
             if (!_queuedBeats.Contains(NextBarIndex))
             {
                 StartCoroutine(QueueBeatStartAt(NextBarIndex, AudioSettings.dspTime + SecondsToNextBar));
-                if ((NextBarIndex % 4) == 1)
+                if (NextBarIndex % 4 == 1)
                 {
                     StartCoroutine(QueueBarStartAt(NextBarIndex, AudioSettings.dspTime + SecondsToNextBar));
                 }
@@ -100,16 +100,20 @@ namespace Audio
             {
                 PlayEat();
             }
-        
-            if ((Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began) || Input.GetKeyDown(KeyCode.T))
+            
+            var firstFingerJustTapped = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
+            var keyboardWasPressed = Input.GetKeyDown(KeyCode.T); 
+
+            if (!firstFingerJustTapped && !keyboardWasPressed)
             {
-                if (_lastPokeAt + _pokePause >= Time.time)
-                {
-                    return;
-                }
-                _lastPokeAt = Time.time;
-                PlayPoke();
+                return;
             }
+            if (_lastPokeAt + _pokePause >= Time.time)
+            {
+                return;
+            }
+            _lastPokeAt = Time.time;
+            PlayPoke();
         }
 
         public Animator flickAnimator;
@@ -275,7 +279,7 @@ namespace Audio
             GUI.HorizontalSlider(new Rect(200, 40, 1500, 20), BeatOffset, -BPSWithPrecision*2, BPSWithPrecision*2);
             GUI.Box(new Rect(200+750, 30, 1, 40), Texture2D.redTexture);
             GUI.Label(new Rect(700, 40, 800, 20), BeatOffset.ToString(CultureInfo.InvariantCulture));
-            GUI.Label(new Rect(0, 60, 500, 20), "Next bar index: " + (NextBarIndex));
+            GUI.Label(new Rect(0, 60, 500, 20), "Next bar index: " + NextBarIndex);
 
             GUI.Label(new Rect(0, 100, 500, 20), "Recs: " + string.Join(", ", _pressTimes));
             GUI.Label(new Rect(0, 100, 500, 20),"IsRec: " + (_pokeTimes.Contains(NextBarIndex-1) ? "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA": ""));
