@@ -287,8 +287,8 @@ GameObject:
   - component: {fileID: 509408056}
   - component: {fileID: 509408055}
   - component: {fileID: 509408060}
-  - component: {fileID: 509408061}
   - component: {fileID: 509408059}
+  - component: {fileID: 509408061}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -494,19 +494,13 @@ MonoBehaviour:
   advanceSoundSource: {fileID: 509408059}
   advanceHoldSoundClip: {fileID: 8300000, guid: 248d4de81deac4e87b6b04c3d2b66e6b, type: 3}
   advanceReleaseSoundClip: {fileID: 8300000, guid: 91bd9500d820f4690b5cf17d405b7b9e, type: 3}
-  statements:
-  - Na? Wie liefs?
-  - Vermutlich hervorragend.
-  - Das wars dann leider schon.
-  - Spiele machen ist dann irgendwie doch schwieriger als erwartet.
-  - Ach ja und alles Gute!
-  - Bis bald!
+  statements: []
   onDone:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 509408061}
-        m_TargetAssemblyTypeName: QuitGame, Assembly-CSharp
-        m_MethodName: Quit
+        m_TargetAssemblyTypeName: Dialogue.LoadScene, Assembly-CSharp
+        m_MethodName: Execute
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -525,9 +519,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 509408054}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b2a03a3a06994577a1fabcb5fe2a7c3, type: 3}
+  m_Script: {fileID: 11500000, guid: 1904b8d07cd744780b563db52792034f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sceneToLoad: IsOver
 --- !u!1 &583828484
 GameObject:
   m_ObjectHideFlags: 0
