@@ -135,6 +135,8 @@ GameObject:
   - component: {fileID: 250770013}
   - component: {fileID: 250770012}
   - component: {fileID: 250770015}
+  - component: {fileID: 250770017}
+  - component: {fileID: 250770016}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -220,3 +222,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6912fefbe659f8f42aa60df64014c1f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  onIsTime:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 250770017}
+        m_TargetAssemblyTypeName: Dialogue.LoadScene, Assembly-CSharp
+        m_MethodName: Execute
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  onIsNotYetTime:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 250770016}
+        m_TargetAssemblyTypeName: Dialogue.LoadScene, Assembly-CSharp
+        m_MethodName: Execute
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &250770016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 250770011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1904b8d07cd744780b563db52792034f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneToLoad: IsNotTime
+--- !u!114 &250770017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 250770011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1904b8d07cd744780b563db52792034f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneToLoad: IsTime

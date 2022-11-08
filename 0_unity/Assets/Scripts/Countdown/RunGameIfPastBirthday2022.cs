@@ -1,8 +1,8 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.Networking;
-using UnityEngine.SceneManagement;
 
 namespace Countdown
 {
@@ -13,23 +13,8 @@ namespace Countdown
             StartCoroutine(CheckTime());
         }
 
-        private void Update()
-        {
-            SkipToGameWorkaround();
-        }
-
-        private static void SkipToGameWorkaround()
-        {
-            if (Input.touchCount >= 6)
-            {
-                SceneManager.LoadScene("Scenes/Game");
-            }
-
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                SceneManager.LoadScene("Scenes/Game");
-            }
-        }
+        [SerializeField] private UnityEvent onIsTime;
+        [SerializeField] private UnityEvent onIsNotYetTime;
 
         private readonly DateTime _startAt = new(2022, 11, 6, 0, 0, 0);
 
@@ -67,11 +52,11 @@ namespace Countdown
             var now = UnixTimeStampToDateTime(double.Parse(currentTimeWebRequest.downloadHandler.text));
             if (now < _startAt)
             {
-                SceneManager.LoadScene("isNotTime");
+                onIsNotYetTime.Invoke();
                 yield break;
             }
-        
-            SceneManager.LoadScene("isTime");
+            
+            onIsTime.Invoke();
         }
     }
 }

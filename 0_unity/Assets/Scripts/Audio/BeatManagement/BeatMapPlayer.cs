@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Linq;
 using Audio.BeatManagement.Chopsticks;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
@@ -13,7 +12,6 @@ namespace Audio.BeatManagement
 {
     public class BeatMapPlayer : MonoBehaviour
     {
-        public AudioMixer mixer;
         public AudioSource master;
         public UnityEvent<int> onBarStart;
         public UnityEvent<int> onBeatStart;
@@ -34,8 +32,6 @@ namespace Audio.BeatManagement
 
         public void Start()
         {
-            mixer.SetFloat("GameVolume", 0.0f);
-            mixer.SetFloat("MenuVolume", -80);
             _bpm = beatMap.bpm;
             master.clip = beatMap.track;
             master.Play();
@@ -147,6 +143,7 @@ namespace Audio.BeatManagement
                     continue;
                 }
                 hasHitAny = true;
+                _scoreManager.AddScore();
                 IncreasePeaCounter();
             }
 
@@ -258,6 +255,8 @@ namespace Audio.BeatManagement
         {
             _pokeTimes = beatMap.beats.Where(i => i >= startingAt).Select(i => i - 1).ToList();
             _eatTimes = beatMap.flickBeats.Where(i => i >= startingAt).Select(i => i - 1).ToList();
+
+            _scoreManager = new ScoreManager(_pokeTimes.Count);
         }
     
         private readonly List<int> _pressTimes = new();
@@ -269,6 +268,7 @@ namespace Audio.BeatManagement
         private float _lastPokeAt = -1f;
         private const float PokePause = 0.110f;
         private int _peaCounter;
+        private ScoreManager _scoreManager;
 
         private void OnGUI()
         {

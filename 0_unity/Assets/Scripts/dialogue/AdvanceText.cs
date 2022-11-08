@@ -45,7 +45,6 @@ namespace Dialogue
             Advance();
         }
 
-        // Update is called once per frame
         private void Advance()
         {
             _allowAdvance = false;

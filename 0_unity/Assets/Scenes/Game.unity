@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 112861681}
   - component: {fileID: 112861680}
   - component: {fileID: 112861682}
+  - component: {fileID: 112861683}
   m_Layer: 5
   m_Name: fade
   m_TagString: Untagged
@@ -214,6 +215,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   music: {fileID: 535248214}
   fadeImage: {fileID: 112861680}
+  afterFadeOut:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 112861683}
+        m_TargetAssemblyTypeName: Dialogue.LoadScene, Assembly-CSharp
+        m_MethodName: Execute
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &112861683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 112861678}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1904b8d07cd744780b563db52792034f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sceneToLoad: IsOver
 --- !u!1 &190348396
 GameObject:
   m_ObjectHideFlags: 0
@@ -1303,7 +1332,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d96b66926e626445ac52bbdcbf2c6b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mixer: {fileID: 24100000, guid: 17e8770f8d21e49478fd87f9d402882b, type: 2}
   master: {fileID: 535248214}
   onBarStart:
     m_PersistentCalls:

@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Audio
@@ -9,6 +9,7 @@ namespace Audio
     {
         public AudioSource music;
         public Image fadeImage;
+        [SerializeField] private UnityEvent afterFadeOut;
 
         private void Update()
         {
@@ -43,7 +44,7 @@ namespace Audio
         {
             yield return Fade(1, 2f);
             yield return new WaitForSeconds(1f);
-            SceneManager.LoadScene("isOver");
+            afterFadeOut.Invoke();
         }
     }
 }
